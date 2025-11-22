@@ -1,0 +1,35 @@
+@font-face {
+  font-family: "Interfonts";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./variable/InterVariable.woff2") format("woff2");
+  unicode-range: U+0400-04FF;
+}
+
+@font-face {
+  font-family: "Interfonts";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./variable-latin/InterVariable-subset.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0100-024F;
+}
+
+@font-face {
+  font-family: "Interfonts";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./variable/InterVariable-Italic.woff2") format("woff2");
+  unicode-range: U+0400-04FF;
+}
+
+@font-face {
+  font-family: "Interfonts";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./variable-latin/InterVariable-Italic-subset.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0100-024F;
+}

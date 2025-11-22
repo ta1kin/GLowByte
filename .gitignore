@@ -25,6 +25,8 @@ api/.env
 client/.env
 .env
 **/.env
+**/package-lock.json
+**/bun.lock
 
 **/*.crt
 **/*.key

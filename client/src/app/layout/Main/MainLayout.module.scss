@@ -1,0 +1,13 @@
+:root {
+    .main-layout {
+        width: 100%;
+        height: 100%;
+        background: red;
+
+        &__ctx {
+            width: 100%;
+            max-width: 1024px;
+            height: 100%;
+        }
+    }
+}
