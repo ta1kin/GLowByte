@@ -1,0 +1,11 @@
+:root {
+    .hep-btns-section {
+        width: 100%;
+        border-radius: 14px;
+        padding: 5.5px;
+        background-color: #F2F2F2;
+        display: grid;
+        grid-template-columns: 5fr clamp(150px, 2vw, 200px);
+        gap: 7.5px;
+    }
+}

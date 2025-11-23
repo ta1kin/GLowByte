@@ -8,7 +8,10 @@ import { type JSX, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material'
 
-import styles from "./Nav.module.scss";
+import SvgPuls from '@/shared/assets/icons/puls.svg?react'
+import SvgBoxPoint from '@/shared/assets/icons/BoxPoint.svg?react'
+import SvgHistoryClock from '@/shared/assets/icons/history-clock.svg?react'
+import styles from './Nav.module.scss'
 
 function HLNav(): JSX.Element {
     const navigate = useNavigate();
@@ -32,23 +35,23 @@ function HLNav(): JSX.Element {
                 >
                     <BottomNavigationAction
                         className="first"
-                        label="Текущая оценка риска"
+                        label="Оценка риска"
                         value={estimationRoute}
-                        icon={<></>}
+                        icon={ <SvgPuls /> }
                         onClick={() => navigate(estimationRoute)}
                     />
                     <BottomNavigationAction
                         className="second"
                         label="Дообучение модели"
                         value={educationRoute}
-                        icon={<></>}
+                        icon={ <SvgBoxPoint /> }
                         onClick={() => navigate(educationRoute)}
                     />
                     <BottomNavigationAction
                         className="third"
                         label="История и поиск"
                         value={historyRoute}
-                        icon={<></>}
+                        icon={ <SvgHistoryClock /> }
                         onClick={() => navigate(historyRoute)}
                     />
                 </BottomNavigation>
