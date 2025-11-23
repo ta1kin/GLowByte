@@ -46,7 +46,7 @@ function Geometry(): JSX.Element {
     <section style={{ width: "100%" }}>
       <UIBlock
         type="violet"
-        iconSrc=""
+        iconSrc={SvgBoxStroke}
         headTxt="Геометрия штабеля и условия хранения"
       >
         <div className={styles["block-body"]}>

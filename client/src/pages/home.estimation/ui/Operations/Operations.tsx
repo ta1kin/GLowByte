@@ -44,7 +44,7 @@ function Operations(): JSX.Element {
   const [frequencyText, setFrequencyText] = useState<string>('');
   const [incident, setIncident] = useState<string>('');
 
-  // Обработчики для чекбоксов
+
   const handleMonitoringChange = (id: string) => {
     setMonitoring((prev) =>
       prev.includes(id)
@@ -65,7 +65,7 @@ function Operations(): JSX.Element {
     <section style={{ width: '100%' }}>
       <UIBlock
         type="green"
-        iconSrc=""
+        iconSrc={SvgSettings}
         headTxt="Операционные / Технологические параметры"
       >
         <div className={styles['block-body']}>

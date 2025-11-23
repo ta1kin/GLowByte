@@ -2,8 +2,8 @@ import { UIBlock } from "@/shared/ui/Block";
 import type { JSX } from "react";
 import { useState } from "react";
 
-import SvgBox from '@/shared/assets/icons/box.svg'
-import styles from './Params.module.scss'
+import SvgBox from "@/shared/assets/icons/box.svg";
+import styles from "./Params.module.scss";
 
 
 const MARK = [
@@ -30,7 +30,7 @@ function Params(): JSX.Element {
 
   return (
     <section style={{ width: "100%" }}>
-      <UIBlock type="orange" iconSrc="" headTxt="Параметры партии угля">
+      <UIBlock type="orange" iconSrc={SvgBox} headTxt="Параметры партии угля">
         <div className={styles["block-body"]}>
           <div className={styles["block-body__ctx"]}>
             <div>
@@ -74,13 +74,10 @@ function Params(): JSX.Element {
               <h4>Влажность, %</h4>
               <input
                 value={humidity || ""}
-                onChange={(event: any) =>
-                  setHumidity(event.target.value)
-                }
+                onChange={(event: any) => setHumidity(event.target.value)}
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
-           
               />
             </div>
             <div>
@@ -91,7 +88,6 @@ function Params(): JSX.Element {
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
-                
               />
             </div>
 
@@ -99,13 +95,10 @@ function Params(): JSX.Element {
               <h4>Размер частиц / фракция (мм)</h4>
               <input
                 value={fraction || ""}
-                onChange={(event: any) =>
-                  setFraction(event.target.value)
-                }
+                onChange={(event: any) => setFraction(event.target.value)}
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
-                
               />
             </div>
 
@@ -117,11 +110,10 @@ function Params(): JSX.Element {
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
-               
               />
             </div>
 
-            <div className={ styles["full-width"] }>
+            <div className={styles["full-width"]}>
               <h4>Дата начала хранения</h4>
               <input
                 value={date}
@@ -132,6 +124,13 @@ function Params(): JSX.Element {
             </div>
           </div>
         </div>
+      </UIBlock>
+    </section>
+  );
+  return (
+    <section style={{ width: "100%" }}>
+      <UIBlock type="orange" iconSrc={SvgBox} headTxt="Параметры партии угля">
+        <></>
       </UIBlock>
     </section>
   );
