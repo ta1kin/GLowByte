@@ -1,5 +1,4 @@
 from datetime import timedelta
-
 import pandas as pd
 
 
@@ -8,6 +7,7 @@ def supplies_processing(path_to_supplies: str) -> pd.DataFrame:
     supplies_df = pd.read_csv(path_to_supplies, header=None)
     supplies_df = supplies_df.drop(columns=['На склад, тн', 'На судно, тн'])
     supplies_df.columns = ['Дата поступления', 'Марка', 'Штабель', 'Дата отправления', 'Склад']
+    supplies_df.to_csv('supplies_agr.csv', index=False)
     return supplies_df
 
 
@@ -16,6 +16,7 @@ def fires_processing(path_to_fires: str) -> pd.DataFrame:
     fires_df = pd.read_csv(path_to_fires, header=None)
     fires_df = fires_df.drop(columns=['Дата составления', 'Вес по акту, тн', 'Дата оконч.'])
     fires_df.columns = ['Марка', 'Склад', 'Дата возгорания', 'Формирование штабеля', 'Штабель']
+    fires_df.to_csv('fires_agr.csv', index=False)
     return fires_df
 
 
@@ -23,6 +24,7 @@ def fires_processing(path_to_fires: str) -> pd.DataFrame:
 def temperature_processing(path_to_temp: str) -> pd.DataFrame:
     temp_df = pd.read_csv(path_to_temp, header=None)
     temp_df = temp_df.drop(columns=['Пикет', 'Смена'])
+    temp_df.to_csv('temperature_agr.csv', index=False)
     return temp_df
 
 
@@ -32,6 +34,7 @@ def weather_processing(path_to_weather: str) -> pd.DataFrame:
     # параметр skiprows=1
     weather_df = weather_df.drop(columns=['visibility', 'v_max', 'weather_code', 'v_avg', 'wind_dir'])
     weather_df.columns = ['datetime', 'temp_air', 'pressure', 'humidity', 'precip', 'wind']
+    weather_df.to_csv('weather_agr.csv', index=False)
     return weather_df
 
 
@@ -100,5 +103,7 @@ def make_dataset(fires: pd.DataFrame, temp: pd.DataFrame, supplies: pd.DataFrame
     # Заполнение пропусков в погоде
     for col in ['temp_air', 'humidity', 'precip']:
         temp[col] = temp[col].fillna(method='ffill').fillna(method='bfill')
+
+    temp.to_csv('full_data_agr.csv', index=False)
 
     return temp
