@@ -162,7 +162,7 @@ function Params(): JSX.Element {
             {/* Кнопка поиска */}
             <div style={{ gridColumn: "1 / -1", marginTop: "20px" }}>
               <Button
-                className="white"
+                className="green square"
                 startIcon={<img src={SvgSearch} />}
                 variant="contained"
                 sx={{ width: "100%" }}
