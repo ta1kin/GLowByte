@@ -8,6 +8,8 @@ import { type JSX, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material'
 
+import styles from './Nav.module.scss';
+
 
 function HLNav(): JSX.Element {
     const navigate = useNavigate();
@@ -20,8 +22,8 @@ function HLNav(): JSX.Element {
     }, [location.pathname]);
 
     return (
-        <nav className="home-layout__nav">
-ё           <Box className="nav-bar">
+        <nav className={ styles['home-layout__nav'] }>
+            <Box className={ styles['nav-bar'] }>
                 <BottomNavigation
                     showLabels
                     value={value}
@@ -30,18 +32,21 @@ function HLNav(): JSX.Element {
                     }}
                 >
                     <BottomNavigationAction
+                        className="first"
                         label="Текущая оценка риска"
                         value={estimationRoute}
                         icon={<></>}
                         onClick={() => navigate(estimationRoute)}
                     />
                     <BottomNavigationAction
+                        className="second"
                         label="Дообучение модели"
                         value={educationRoute}
                         icon={<></>}
                         onClick={() => navigate(educationRoute)}
                     />
                     <BottomNavigationAction
+                        className="third"
                         label="История и поиск"
                         value={historyRoute}
                         icon={<></>}
@@ -50,7 +55,7 @@ function HLNav(): JSX.Element {
                 </BottomNavigation>
             </Box>
         </nav>
-    )   
+    )
 }
 
 export default HLNav

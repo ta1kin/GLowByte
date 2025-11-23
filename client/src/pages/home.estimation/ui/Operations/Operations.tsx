@@ -1,6 +1,7 @@
 import { UIBlock } from '@/shared/ui/Block'
 import type { JSX } from 'react'
 
+import SvgSettings from '@/shared/assets/icons/settings.svg'
 import styles from './Operations.module.scss'
 
 
@@ -9,7 +10,7 @@ function Operations(): JSX.Element {
         <section style={{ width: '100%' }}>
             <UIBlock
                 type="green"
-                iconSrc=""
+                iconSrc={ SvgSettings }
                 headTxt="Операционные / Технологические параметры"
             >
                 <></>

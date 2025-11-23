@@ -1,0 +1,25 @@
+:root {
+    .home-layout__header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding-block: 10px;
+
+        .header-logo {
+            display: flex;
+            gap: clamp(5px, 5vw, 10px);
+            flex-direction: row;
+            justify-content: left;
+            align-items: center;
+
+            &__text {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: left;
+            }
+        }
+    }
+}
