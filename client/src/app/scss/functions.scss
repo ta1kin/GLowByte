@@ -1,3 +1,5 @@
+@use "./variables.scss" as *;
+
 @use "sass:math";
 @use "sass:meta";
 
@@ -22,10 +24,10 @@
         @error "Функция `fluidTextFn` использует только числа или px для минимального значения!";
     }
 
-    $maxSize: math.div($maxNumber, vars.$baseRemDelta);
-    $minSize: math.div($minNumber, vars.$baseRemDelta);
-    $maxWidth: math.div(vars.$maxViewportWidth, vars.$baseRemDelta);
-    $minWidth: math.div(vars.$minViewportWidth, vars.$baseRemDelta);
+    $maxSize: math.div($maxNumber, $baseRemDelta);
+    $minSize: math.div($minNumber, $baseRemDelta);
+    $maxWidth: math.div($maxViewportWidth, $baseRemDelta);
+    $minWidth: math.div($minViewportWidth, $baseRemDelta);
 
     $slope: math.div(($maxSize - $minSize), ($maxWidth - $minWidth));
     $yAxisIntersection: - $minWidth * $slope + $minSize;
