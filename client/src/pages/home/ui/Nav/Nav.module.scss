@@ -1,0 +1,14 @@
+:root {
+    .home-layout__nav {
+        width: 100%;
+        margin-top: 20px;
+
+        @media (max-width: 430px ) {
+            margin-top: 10px;
+        }
+
+        .nav-bar {
+            width: 100%;
+        }
+    }
+}

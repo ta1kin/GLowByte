@@ -1,0 +1,11 @@
+@use "./global.scss";
+@use "./mui/button.scss";
+@use "./mui/navigation.scss";
+
+
+:root {
+    #root {
+        width: 100%;
+        height: 100%;
+    }
+}

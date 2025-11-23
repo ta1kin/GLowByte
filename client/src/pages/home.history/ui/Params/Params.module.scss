@@ -1,0 +1,60 @@
+:root {
+  .block-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+
+    &__ctx {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      position: relative;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+      
+      > div {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        @media (max-width: 480px) {
+          gap: 4px;
+        }
+      }
+
+      .select-params {
+        width: 100%;
+        border: 1px solid #f2f2f2;
+        border-radius: 10px;
+        padding: 10px;
+        color: black;
+        background-color: #f8f8f8;
+        outline: none;
+        box-shadow: none;
+        font-size: 14px;
+        box-sizing: border-box;
+
+        @media (max-width: 480px) {
+          padding: 8px;
+          font-size: 13px;
+        }
+
+        &:focus {
+          border-color: #f2f2f2;
+          outline: none;
+          box-shadow: none;
+        }
+
+        &:invalid {
+          color: #999;
+        }
+      } 
+    }
+  }
+}

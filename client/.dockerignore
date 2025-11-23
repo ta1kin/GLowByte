@@ -1,0 +1,9 @@
+.vscode/
+node_modules/
+dist/
+
+.env.example
+.dockerignore
+bun.lock
+package.lock.json
+Dockerfile

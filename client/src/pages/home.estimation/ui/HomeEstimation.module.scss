@@ -1,0 +1,28 @@
+:root {
+    .home-estimation-page {
+        --this-gap: 25px;
+
+        width: 100%;
+        display: grid;
+        gap: var(--this-gap);
+        grid-template-columns: 3fr clamp(250px, 25%, 350px);
+        overflow: auto;
+
+        @media (max-width: 750px) {
+            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        &__main {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--this-gap);
+        }
+
+        &__aside {
+            width: 100%;
+        }
+    }
+}

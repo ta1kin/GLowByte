@@ -5,6 +5,10 @@
 api/.env
 bot/.env
 ml-service/.env
+client/.env
+**/.env
+**/package-lock.json
+**/bun.lock
 
 # SSL сертификаты
 nginx/ssl/*.pem

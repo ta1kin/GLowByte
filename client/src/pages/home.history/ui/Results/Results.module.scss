@@ -1,0 +1,78 @@
+:root {
+  .block-body {
+    width: 100%;
+    padding: 10px;
+
+    .block-body__ctx {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 5px;
+
+      th,
+      td {
+        padding: 10px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      th {
+        font-weight: 600;
+        background-color: #f8f8f8;
+        border-bottom: 2px solid #f2f2f2;
+      }
+
+      td {
+        border-top: 1px solid #eee;
+      }
+
+      tr:first-child td {
+        border-top: none;
+      }
+      @media (max-width: 768px) {
+        display: none; /* скрываем таблицу */
+      }
+    }
+  }
+  .mobile-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: #fff;
+
+    @media (min-width: 769px) {
+      display: none; /* Скрываем карточки на десктопе */
+    }
+
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 4px 0;
+      font-size: 14px;
+    }
+
+    .label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .value {
+      color: #333;
+      text-align: right;
+    }
+
+    .incident-yes {
+      color: red;
+      font-weight: bold;
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+      color: white;
+    }
+  }
+}
