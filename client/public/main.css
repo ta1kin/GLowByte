@@ -25,28 +25,27 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  font-family: 'Interfonts', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    font-family: 'Interfonts', sans-serif;
 }
 
 *::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 html, body {
-  touch-action: none;
-  overflow: hidden;
-  overscroll-behavior: none;
+    touch-action: none;
+    overflow: hidden;
+    overscroll-behavior: none;
 }
 
 body {
     width: 100vw;
     height: 100vh;
-    background: rgb(188, 188, 188);
 }
 
 #root {

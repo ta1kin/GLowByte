@@ -1,0 +1,3 @@
+@mixin fluidText($max: $defaultMaxFont, $min: $defaultMinFont) {
+    font-size: fluidTextFn($max, $min);
+}

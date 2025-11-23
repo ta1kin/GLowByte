@@ -1,0 +1,41 @@
+@use "./variables.scss" as *;
+@use "./functions.scss" as *;
+@use "./mixins.scss" as *;
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+    background: #12b99a;
+    color: #ffffffd0;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body, input, h5, h6, p {
+    font-family: 'Interfonts', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, button {
+    font-family: 'Interfonts', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+}
+
+img, svg, button, a, input {
+    text-decoration: none;
+    user-select: none;
+}
+
+h1 { @include fluidText(40, 28) }
+h2 { @include fluidText(36, 26) }
+h3 { @include fluidText(32, 24) }
+h4 { @include fluidText(28, 22) }
+h5 { @include fluidText(24, 20) }
+h6 { @include fluidText(20, 18) }
+p  { @include fluidText(16, 14) }

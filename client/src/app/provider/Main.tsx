@@ -1,5 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 import { Provider } from 'react-redux';
+import { SNACK_COUNT, SNACK_TIMEOUT } from '@/shared/config';
 import { store } from '@/app/store';
 import type { JSX, ReactNode } from 'react';
 
@@ -12,7 +14,12 @@ function MainProvider({ children }: IMainProviderProps): JSX.Element {
     return (
         <Provider store={ store }>
             <BrowserRouter>
-                { children }
+                <SnackbarProvider
+                    maxSnack={ SNACK_COUNT }
+                    autoHideDuration={ SNACK_TIMEOUT }
+                >
+                    { children }
+                </SnackbarProvider>
             </BrowserRouter>
         </Provider>
     )

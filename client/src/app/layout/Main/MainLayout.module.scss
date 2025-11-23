@@ -2,12 +2,21 @@
     .main-layout {
         width: 100%;
         height: 100%;
-        background: red;
+        display: flex;
+        justify-content: center;
 
         &__ctx {
             width: 100%;
             max-width: 1024px;
             height: 100%;
+
+            @media (max-width: 1024px) {
+                padding-inline: 5vw;
+            }
+
+            @media (max-width: 600px) {
+                padding-inline: 15px;
+            }
         }
     }
 }

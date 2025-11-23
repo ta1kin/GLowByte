@@ -3,6 +3,8 @@ import {
     INNER_ANIME_MS,
     GLOBAL_ANIME_S,
     INNER_ANIME_S,
+    SNACK_COUNT,
+    SNACK_TIMEOUT,
 } from './ui';
 
 import {
@@ -23,6 +25,8 @@ export {
     INNER_ANIME_MS,
     GLOBAL_ANIME_S,
     INNER_ANIME_S,
+    SNACK_COUNT,
+    SNACK_TIMEOUT,
 
     previewRoute,
     homeGlobRoute,
