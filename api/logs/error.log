@@ -1,0 +1,813 @@
+2025-11-23T19:31:21.555Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /stockpiles/sklads
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "number": 1,
+    "name": "Склад №1",
+    "capacity_t": 50000,
+    "location": "Участок А"
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:31:21.556Z ERROR [ExceptionFilter]: Exception: property capacity_t should not exist,property location should not exist
+Metadata: {
+  "path": "/stockpiles/sklads",
+  "method": "POST",
+  "body": {
+    "number": 1,
+    "name": "Склад №1",
+    "capacity_t": 50000,
+    "location": "Участок А"
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property capacity_t should not exist",
+      "property location should not exist"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:31:29.719Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /stockpiles
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "mark": "A1",
+    "label": "Штабель-1",
+    "formed_at": "2025-11-01T00:00:00Z",
+    "current_mass": 1000,
+    "status": "ACTIVE",
+    "width_m": 20,
+    "mass_t": 1000,
+    "height_m": 5,
+    "length_m": 30,
+    "sklad_id": 1
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:31:29.719Z ERROR [ExceptionFilter]: Exception: property formed_at should not exist,property current_mass should not exist,property sklad_id should not exist,skladId must be an integer number
+Metadata: {
+  "path": "/stockpiles",
+  "method": "POST",
+  "body": {
+    "mark": "A1",
+    "label": "Штабель-1",
+    "formed_at": "2025-11-01T00:00:00Z",
+    "current_mass": 1000,
+    "status": "ACTIVE",
+    "width_m": 20,
+    "mass_t": 1000,
+    "height_m": 5,
+    "length_m": 30,
+    "sklad_id": 1
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property formed_at should not exist",
+      "property current_mass should not exist",
+      "property sklad_id should not exist",
+      "skladId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:31:33.266Z ERROR [ExceptionFilter]: Exception: Cannot POST /stockpiles/1/temperature
+Metadata: {
+  "path": "/stockpiles/1/temperature",
+  "method": "POST",
+  "body": {
+    "max_temp": 45.5,
+    "piket": "П-1",
+    "min_temp": 40,
+    "avg_temp": 42.5,
+    "shtabel_id": 1,
+    "risk_level": "MEDIUM",
+    "record_date": "2025-11-23T10:00:00Z"
+  },
+  "statusCode": 404,
+  "error": {
+    "name": "NotFoundException",
+    "message": "Cannot POST /stockpiles/1/temperature",
+    "error": "Not Found",
+    "statusCode": 404
+  }
+}
+Stack: NotFoundException: Cannot POST /stockpiles/1/temperature
+    at callback (/app/node_modules/@nestjs/core/router/routes-resolver.js:77:19)
+    at /app/node_modules/@nestjs/core/router/router-proxy.js:9:23
+    at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/app/node_modules/router/index.js:342:13)
+    at /app/node_modules/router/index.js:297:9
+    at processParams (/app/node_modules/router/index.js:582:12)
+    at next (/app/node_modules/router/index.js:291:5)
+    at urlencodedParser (/app/node_modules/body-parser/lib/types/urlencoded.js:57:7)
+    at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/app/node_modules/router/index.js:342:13)
+2025-11-23T19:31:36.166Z ERROR [HTTP Interceptor]: Ошибка при обработке PUT /stockpiles/1
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "last_temp": 45.5,
+    "last_temp_date": "2025-11-23T10:00:00Z"
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:31:36.166Z ERROR [ExceptionFilter]: Exception: property last_temp should not exist,property last_temp_date should not exist
+Metadata: {
+  "path": "/stockpiles/1",
+  "method": "PUT",
+  "body": {
+    "last_temp": 45.5,
+    "last_temp_date": "2025-11-23T10:00:00Z"
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property last_temp should not exist",
+      "property last_temp_date should not exist"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:31:51.677Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /predictions
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:31:51.677Z ERROR [ExceptionFilter]: Exception: property shtabel_id should not exist,property horizon_days should not exist,shtabelId must be an integer number
+Metadata: {
+  "path": "/predictions",
+  "method": "POST",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property shtabel_id should not exist",
+      "property horizon_days should not exist",
+      "shtabelId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:32:01.142Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /stockpiles
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formed_at": "2025-11-15T00:00:00Z",
+    "current_mass": 1500,
+    "status": "ACTIVE",
+    "width_m": 25,
+    "mass_t": 1500,
+    "height_m": 6,
+    "last_temp": 75,
+    "last_temp_date": "2025-11-23T10:00:00Z",
+    "length_m": 35,
+    "sklad_id": 1
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:32:01.142Z ERROR [ExceptionFilter]: Exception: property formed_at should not exist,property current_mass should not exist,property last_temp should not exist,property last_temp_date should not exist,property sklad_id should not exist,skladId must be an integer number
+Metadata: {
+  "path": "/stockpiles",
+  "method": "POST",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formed_at": "2025-11-15T00:00:00Z",
+    "current_mass": 1500,
+    "status": "ACTIVE",
+    "width_m": 25,
+    "mass_t": 1500,
+    "height_m": 6,
+    "last_temp": 75,
+    "last_temp_date": "2025-11-23T10:00:00Z",
+    "length_m": 35,
+    "sklad_id": 1
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property formed_at should not exist",
+      "property current_mass should not exist",
+      "property last_temp should not exist",
+      "property last_temp_date should not exist",
+      "property sklad_id should not exist",
+      "skladId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:38:41.976Z ERROR [HTTP Interceptor]: Ошибка при обработке PUT /stockpiles/1
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "lastTemp": 45.5
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:38:41.976Z ERROR [ExceptionFilter]: Exception: property lastTempDate should not exist
+Metadata: {
+  "path": "/stockpiles/1",
+  "method": "PUT",
+  "body": {
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "lastTemp": 45.5
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property lastTempDate should not exist"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:38:51.349Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /stockpiles
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formedAt": "2025-11-15T00:00:00Z",
+    "status": "ACTIVE",
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "skladId": 1,
+    "mass_t": 1500,
+    "height_m": 6,
+    "lastTemp": 75,
+    "length_m": 35,
+    "width_m": 25
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:38:51.349Z ERROR [ExceptionFilter]: Exception: property lastTempDate should not exist,property lastTemp should not exist
+Metadata: {
+  "path": "/stockpiles",
+  "method": "POST",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formedAt": "2025-11-15T00:00:00Z",
+    "status": "ACTIVE",
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "skladId": 1,
+    "mass_t": 1500,
+    "height_m": 6,
+    "lastTemp": 75,
+    "length_m": 35,
+    "width_m": 25
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property lastTempDate should not exist",
+      "property lastTemp should not exist"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:39:11.249Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /predictions
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:39:11.249Z ERROR [ExceptionFilter]: Exception: property shtabel_id should not exist,property horizon_days should not exist,shtabelId must be an integer number
+Metadata: {
+  "path": "/predictions",
+  "method": "POST",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property shtabel_id should not exist",
+      "property horizon_days should not exist",
+      "shtabelId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:45:39.409Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /stockpiles
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formedAt": "2025-11-15T00:00:00Z",
+    "status": "ACTIVE",
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "skladId": 1,
+    "mass_t": 1500,
+    "height_m": 6,
+    "lastTemp": 75,
+    "length_m": 35,
+    "width_m": 25
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:45:39.409Z ERROR [ExceptionFilter]: Exception: property lastTempDate should not exist,property lastTemp should not exist
+Metadata: {
+  "path": "/stockpiles",
+  "method": "POST",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formedAt": "2025-11-15T00:00:00Z",
+    "status": "ACTIVE",
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "skladId": 1,
+    "mass_t": 1500,
+    "height_m": 6,
+    "lastTemp": 75,
+    "length_m": 35,
+    "width_m": 25
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property lastTempDate should not exist",
+      "property lastTemp should not exist"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:53:07.767Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /stockpiles
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formedAt": "2025-11-15T00:00:00Z",
+    "status": "ACTIVE",
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "skladId": 1,
+    "mass_t": 1500,
+    "height_m": 6,
+    "lastTemp": 75,
+    "length_m": 35,
+    "width_m": 25
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:53:07.767Z ERROR [ExceptionFilter]: Exception: property lastTempDate should not exist,property lastTemp should not exist
+Metadata: {
+  "path": "/stockpiles",
+  "method": "POST",
+  "body": {
+    "mark": "B2",
+    "label": "Штабель-2",
+    "formedAt": "2025-11-15T00:00:00Z",
+    "status": "ACTIVE",
+    "lastTempDate": "2025-11-23T10:00:00Z",
+    "skladId": 1,
+    "mass_t": 1500,
+    "height_m": 6,
+    "lastTemp": 75,
+    "length_m": 35,
+    "width_m": 25
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property lastTempDate should not exist",
+      "property lastTemp should not exist"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:53:40.531Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /predictions
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T19:53:40.531Z ERROR [ExceptionFilter]: Exception: property shtabel_id should not exist,property horizon_days should not exist,shtabelId must be an integer number
+Metadata: {
+  "path": "/predictions",
+  "method": "POST",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property shtabel_id should not exist",
+      "property horizon_days should not exist",
+      "shtabelId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T20:00:15.843Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /predictions
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T20:00:15.844Z ERROR [ExceptionFilter]: Exception: property shtabel_id should not exist,property horizon_days should not exist,shtabelId must be an integer number
+Metadata: {
+  "path": "/predictions",
+  "method": "POST",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property shtabel_id should not exist",
+      "property horizon_days should not exist",
+      "shtabelId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T20:05:25.680Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /predictions
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T20:05:25.681Z ERROR [ExceptionFilter]: Exception: property shtabel_id should not exist,property horizon_days should not exist,shtabelId must be an integer number
+Metadata: {
+  "path": "/predictions",
+  "method": "POST",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property shtabel_id should not exist",
+      "property horizon_days should not exist",
+      "shtabelId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T20:06:21.240Z ERROR [HTTP Interceptor]: Ошибка при обработке POST /predictions
+Metadata: {
+  "statusCode": 400,
+  "errorName": "BadRequestException",
+  "errorMessage": "Bad Request Exception",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T20:06:21.240Z ERROR [ExceptionFilter]: Exception: property shtabel_id should not exist,property horizon_days should not exist,shtabelId must be an integer number
+Metadata: {
+  "path": "/predictions",
+  "method": "POST",
+  "body": {
+    "shtabel_id": 1,
+    "horizon_days": 7
+  },
+  "statusCode": 400,
+  "error": {
+    "name": "BadRequestException",
+    "message": [
+      "property shtabel_id should not exist",
+      "property horizon_days should not exist",
+      "shtabelId must be an integer number"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+}
+Stack: BadRequestException: Bad Request Exception
+    at ValidationPipe.exceptionFactory (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:107:20)
+    at ValidationPipe.transform (/app/node_modules/@nestjs/common/pipes/validation.pipe.js:74:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveParamValue (/app/node_modules/@nestjs/core/router/router-execution-context.js:148:23)
+    at async Promise.all (index 0)
+    at async pipesFn (/app/node_modules/@nestjs/core/router/router-execution-context.js:151:13)
+    at async /app/node_modules/@nestjs/core/router/router-execution-context.js:37:30
+2025-11-23T21:31:45.143Z ERROR [ExceptionFilter]: Exception: Cannot GET /api/health
+Metadata: {
+  "path": "/api/health",
+  "method": "GET",
+  "statusCode": 404,
+  "error": {
+    "name": "NotFoundException",
+    "message": "Cannot GET /api/health",
+    "error": "Not Found",
+    "statusCode": 404
+  }
+}
+Stack: NotFoundException: Cannot GET /api/health
+    at callback (/app/node_modules/@nestjs/core/router/routes-resolver.js:77:19)
+    at /app/node_modules/@nestjs/core/router/router-proxy.js:9:23
+    at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/app/node_modules/router/index.js:342:13)
+    at /app/node_modules/router/index.js:297:9
+    at processParams (/app/node_modules/router/index.js:582:12)
+    at next (/app/node_modules/router/index.js:291:5)
+    at urlencodedParser (/app/node_modules/body-parser/lib/types/urlencoded.js:68:7)
+    at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/app/node_modules/router/index.js:342:13)
+2025-11-23T21:36:25.671Z ERROR [ExceptionFilter]: Exception: Cannot GET /api/data/uploads
+Metadata: {
+  "path": "/api/data/uploads",
+  "method": "GET",
+  "statusCode": 404,
+  "error": {
+    "name": "NotFoundException",
+    "message": "Cannot GET /api/data/uploads",
+    "error": "Not Found",
+    "statusCode": 404
+  }
+}
+Stack: NotFoundException: Cannot GET /api/data/uploads
+    at callback (/app/node_modules/@nestjs/core/router/routes-resolver.js:77:19)
+    at /app/node_modules/@nestjs/core/router/router-proxy.js:9:23
+    at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/app/node_modules/router/index.js:342:13)
+    at /app/node_modules/router/index.js:297:9
+    at processParams (/app/node_modules/router/index.js:582:12)
+    at next (/app/node_modules/router/index.js:291:5)
+    at urlencodedParser (/app/node_modules/body-parser/lib/types/urlencoded.js:68:7)
+    at Layer.handleRequest (/app/node_modules/router/lib/layer.js:152:17)
+    at trimPrefix (/app/node_modules/router/index.js:342:13)

@@ -42,7 +42,7 @@ export class LoggingInterceptor implements NestInterceptor {
         // Более детальное логирование ошибки
         this.logger.error(
           `Ошибка при обработке ${method} ${url}`,
-          error.stack,
+          (error instanceof Error ? error.stack : String(error)),
           'HTTP Interceptor',
           {
             statusCode,

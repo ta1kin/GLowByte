@@ -14,24 +14,29 @@ export class PredictionConsumer implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // Single prediction consumer
-    await this.queueService.consume('prediction.calculate', async (message, msg) => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    try {
+      await this.queueService.consume('prediction.calculate', async (message, msg) => {
       this.logger.log(
-        `Processing prediction: shtabel ${message.shtabelId}`,
+        `Обработка прогноза: штабель ${message.shtabelId}`,
         this.CONTEXT,
         { shtabelId: message.shtabelId },
       );
 
       try {
-        await this.predictionProcessor.processPrediction(message.shtabelId);
+        await this.predictionProcessor.processPrediction(
+          message.shtabelId,
+          message.horizonDays,
+        );
         this.logger.log(
-          `Prediction completed: shtabel ${message.shtabelId}`,
+          `Прогноз завершен: штабель ${message.shtabelId}`,
           this.CONTEXT,
         );
       } catch (error) {
         this.logger.error(
-          `Prediction failed: shtabel ${message.shtabelId}`,
-          error.stack,
+          `Прогноз завершился ошибкой: штабель ${message.shtabelId}`,
+          error instanceof Error ? error.stack : String(error),
           this.CONTEXT,
           { shtabelId: message.shtabelId, error },
         );
@@ -39,10 +44,9 @@ export class PredictionConsumer implements OnModuleInit {
       }
     });
 
-    // Batch prediction consumer
     await this.queueService.consume('prediction.batch', async (message, msg) => {
       this.logger.log(
-        `Processing batch prediction: ${message.shtabelIds?.length || 0} stockpiles`,
+        `Обработка пакетного прогноза: ${message.shtabelIds?.length || 0} штабелей`,
         this.CONTEXT,
         { count: message.shtabelIds?.length },
       );
@@ -51,11 +55,11 @@ export class PredictionConsumer implements OnModuleInit {
         await this.predictionProcessor.processBatchPredictions(
           message.shtabelIds || [],
         );
-        this.logger.log('Batch prediction completed', this.CONTEXT);
+        this.logger.log('Пакетный прогноз завершен', this.CONTEXT);
       } catch (error) {
         this.logger.error(
-          'Batch prediction failed',
-          error.stack,
+          'Пакетный прогноз завершился ошибкой',
+          error instanceof Error ? error.stack : String(error),
           this.CONTEXT,
           { error },
         );
@@ -63,7 +67,15 @@ export class PredictionConsumer implements OnModuleInit {
       }
     });
 
-    this.logger.log('Prediction consumers started', this.CONTEXT);
+    this.logger.log('Потребители прогнозов запущены', this.CONTEXT);
+    } catch (error) {
+      this.logger.error(
+        'Не удалось запустить потребители прогнозов',
+        (error instanceof Error ? error.stack : String(error)),
+        this.CONTEXT,
+        { error }
+      );
+    }
   }
 }
 

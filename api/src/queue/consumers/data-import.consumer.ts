@@ -14,9 +14,12 @@ export class DataImportConsumer implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.queueService.consume('data.import', async (message, msg) => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    try {
+      await this.queueService.consume('data.import', async (message, msg) => {
       this.logger.log(
-        `Processing data import: ${message.uploadId}`,
+        `Обработка импорта данных: ${message.uploadId}`,
         this.CONTEXT,
         { uploadId: message.uploadId, fileType: message.fileType },
       );
@@ -28,21 +31,29 @@ export class DataImportConsumer implements OnModuleInit {
           message.fileType,
         );
         this.logger.log(
-          `Data import completed: ${message.uploadId}`,
+          `Импорт данных завершен: ${message.uploadId}`,
           this.CONTEXT,
         );
       } catch (error) {
         this.logger.error(
-          `Data import failed: ${message.uploadId}`,
-          error.stack,
+          `Импорт данных завершился ошибкой: ${message.uploadId}`,
+          (error instanceof Error ? error.stack : String(error)),
           this.CONTEXT,
           { uploadId: message.uploadId, error },
         );
-        throw error; // Will trigger retry or DLQ
+        throw error;
       }
     });
 
-    this.logger.log('Data import consumer started', this.CONTEXT);
+    this.logger.log('Потребитель импорта данных запущен', this.CONTEXT);
+    } catch (error) {
+      this.logger.error(
+        'Не удалось запустить потребитель импорта данных',
+        (error instanceof Error ? error.stack : String(error)),
+        this.CONTEXT,
+        { error }
+      );
+    }
   }
 }
 

@@ -13,16 +13,33 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 
 	async onModuleInit() {
 		try {
-			this.connection = await amqp.connect(this.rabbitmqUrl)
-			this.channel = await this.connection.createChannel()
-			this.logger.log('RabbitMQ connected', this.CONTEXT)
+			let retries = 5
+			let delay = 1000
+			while (retries > 0) {
+				try {
+					this.connection = await amqp.connect(this.rabbitmqUrl)
+					this.channel = await this.connection.createChannel()
+					this.logger.log('RabbitMQ подключен', this.CONTEXT)
 
-			// Setup exchanges and queues
-			await this.setupExchanges()
-			await this.setupQueues()
+					await this.setupExchanges()
+					await this.setupQueues()
+					return
+				} catch (error: any) {
+					retries--
+					if (retries === 0) {
+						throw error
+					}
+					this.logger.log(
+						`Ошибка подключения к RabbitMQ, повтор через ${delay}ms... (осталось попыток: ${retries})`,
+						this.CONTEXT
+					)
+					await new Promise(resolve => setTimeout(resolve, delay))
+					delay *= 2
+				}
+			}
 		} catch (error: any) {
 			this.logger.error(
-				'Failed to connect to RabbitMQ',
+				'Не удалось подключиться к RabbitMQ после всех попыток',
 				error?.stack || String(error),
 				this.CONTEXT
 			)
@@ -39,7 +56,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 			}
 		} catch (error: any) {
 			this.logger.error(
-				'Error closing RabbitMQ connection',
+				'Ошибка при закрытии подключения к RabbitMQ',
 				error?.stack || String(error),
 				this.CONTEXT
 			)
@@ -51,17 +68,15 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 			throw new Error('Channel not initialized')
 		}
 
-		// Main exchange for routing
 		await this.channel.assertExchange('coalfire', 'direct', {
 			durable: true,
 		})
 
-		// Dead letter exchange for failed messages
 		await this.channel.assertExchange('coalfire.dlx', 'direct', {
 			durable: true,
 		})
 
-		this.logger.log('Exchanges declared', this.CONTEXT)
+		this.logger.log('Exchange объявлены', this.CONTEXT)
 	}
 
 	private async setupQueues() {
@@ -79,7 +94,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 					arguments: {
 						'x-dead-letter-exchange': 'coalfire.dlx',
 						'x-dead-letter-routing-key': 'data.import.failed',
-						'x-message-ttl': 3600000, // 1 hour
+						'x-message-ttl': 3600000,
 					},
 				},
 			},
@@ -92,7 +107,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 					arguments: {
 						'x-dead-letter-exchange': 'coalfire.dlx',
 						'x-dead-letter-routing-key': 'prediction.calculate.failed',
-						'x-message-ttl': 1800000, // 30 minutes
+						'x-message-ttl': 1800000,
 					},
 				},
 			},
@@ -105,7 +120,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 					arguments: {
 						'x-dead-letter-exchange': 'coalfire.dlx',
 						'x-dead-letter-routing-key': 'prediction.batch.failed',
-						'x-message-ttl': 3600000, // 1 hour
+						'x-message-ttl': 3600000,
 					},
 				},
 			},
@@ -118,11 +133,10 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 					arguments: {
 						'x-dead-letter-exchange': 'coalfire.dlx',
 						'x-dead-letter-routing-key': 'model.train.failed',
-						'x-message-ttl': 7200000, // 2 hours
+						'x-message-ttl': 7200000,
 					},
 				},
 			},
-			// Dead letter queues
 			{
 				name: 'data.import.failed',
 				exchange: 'coalfire.dlx',
@@ -157,7 +171,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 				queueConfig.routingKey
 			)
 			this.logger.log(
-				`Queue declared and bound: ${queueConfig.name}`,
+				`Очередь объявлена и привязана: ${queueConfig.name}`,
 				this.CONTEXT
 			)
 		}
@@ -169,7 +183,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 		options?: amqp.Options.Publish
 	): Promise<boolean> {
 		if (!this.channel) {
-			this.logger.error('Channel not initialized', '', this.CONTEXT)
+			this.logger.error('Канал не инициализирован', '', this.CONTEXT)
 			return false
 		}
 
@@ -181,7 +195,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 			})
 		} catch (error: any) {
 			this.logger.error(
-				`Failed to publish message to ${routingKey}`,
+				`Не удалось опубликовать сообщение в ${routingKey}`,
 				error?.stack || String(error),
 				this.CONTEXT
 			)
@@ -194,11 +208,22 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 		callback: (message: any, msg: amqp.ConsumeMessage) => Promise<void>,
 		options?: amqp.Options.Consume
 	): Promise<void> {
-		if (!this.channel) {
-			throw new Error('Channel not initialized')
+		let retries = 30
+		while (!this.channel && retries > 0) {
+			await new Promise(resolve => setTimeout(resolve, 500))
+			retries--
 		}
 
-		// Устанавливаем prefetch для ограничения одновременной обработки
+		if (!this.channel) {
+			this.logger.error(
+				'Канал не инициализирован после ожидания',
+				'',
+				this.CONTEXT,
+				{ queue }
+			)
+			throw new Error('Канал не инициализирован')
+		}
+
 		await this.channel.prefetch(10)
 
 		await this.channel.consume(
@@ -211,35 +236,45 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 						this.channel.ack(msg)
 					} catch (error: any) {
 						this.logger.error(
-							`Error processing message from ${queue}`,
+							`Ошибка обработки сообщения из ${queue}`,
 							error?.stack || String(error),
 							this.CONTEXT,
 							{ error, queue }
 						)
-						// Reject and requeue (up to max retries)
 						const retryCount =
 							(msg.properties.headers?.['x-retry-count'] as number) || 0
 						if (retryCount < 3) {
-							// Увеличиваем счетчик попыток
 							const headers = {
-								...msg.properties.headers,
+								...(msg.properties.headers || {}),
 								'x-retry-count': retryCount + 1,
 							}
-							// Requeue с обновленными headers
+							const routingKey = queue.endsWith('.failed') 
+								? queue.replace('.failed', '')
+								: queue
+							
 							this.channel.publish(
 								'coalfire',
-								queue.replace('.failed', ''),
+								routingKey,
 								msg.content,
-								{ headers, persistent: true }
+								{ 
+									headers, 
+									persistent: true,
+									expiration: String(5000 * (retryCount + 1))
+								}
 							)
-							this.channel.ack(msg) // Подтверждаем оригинальное сообщение
+							this.channel.ack(msg)
+							this.logger.warn(
+								`Сообщение возвращено в очередь (попытка ${retryCount + 1}/3)`,
+								this.CONTEXT,
+								{ queue, retryCount: retryCount + 1 }
+							)
 						} else {
 							this.logger.warn(
-								`Message sent to DLQ after ${retryCount} retries`,
+								`Сообщение отправлено в DLQ после ${retryCount} попыток`,
 								this.CONTEXT,
 								{ queue, retryCount }
 							)
-							this.channel.nack(msg, false, false) // Send to DLQ
+							this.channel.nack(msg, false, false)
 						}
 					}
 				}

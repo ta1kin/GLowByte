@@ -1,118 +1,158 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { QueueService } from '../queue/queue.service';
-import { MlService } from './ml.service';
-import { AppLogger } from '../common/logger/logger.service';
-import { successResponse, errorResponse } from '../common/helpers/api.response.helper';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
+import {
+	errorResponse,
+	successResponse,
+} from '../common/helpers/api.response.helper'
+import { AppLogger } from '../common/logger/logger.service'
+import { QueueService } from '../queue/queue.service'
+import { MlService } from './ml.service'
 
 @Injectable()
 export class PredictionService {
-  private readonly logger = new AppLogger();
-  private readonly CONTEXT = 'PredictionService';
+	private readonly logger = new AppLogger()
+	private readonly CONTEXT = 'PredictionService'
 
-  constructor(
-    private prisma: PrismaService,
-    private queueService: QueueService,
-    private mlService: MlService,
-  ) {}
+	constructor(
+		private prisma: PrismaService,
+		private queueService: QueueService,
+		private mlService: MlService
+	) {}
 
-  async getPredictions(shtabelId?: number, skladId?: number, limit = 100) {
-    try {
-      const predictions = await this.prisma.prediction.findMany({
-        where: {
-          ...(shtabelId && { shtabelId }),
-          ...(skladId && { skladId }),
-        },
-        include: {
-          shtabel: {
-            include: {
-              sklad: true,
-            },
-          },
-        },
-        orderBy: { ts: 'desc' },
-        take: limit,
-      });
+	async getPredictions(
+		shtabelId?: number,
+		skladId?: number,
+		riskLevel?: string,
+		limit = 100
+	) {
+		try {
+			const predictions = await this.prisma.prediction.findMany({
+				where: {
+					...(shtabelId && { shtabelId }),
+					...(skladId && { skladId }),
+					...(riskLevel && { riskLevel: riskLevel as any }),
+				},
+				include: {
+					shtabel: {
+						include: {
+							sklad: true,
+						},
+					},
+				},
+				orderBy: { ts: 'desc' },
+				take: limit,
+			})
 
-      return successResponse(predictions, 'Predictions retrieved');
-    } catch (error) {
-      this.logger.error('Error getting predictions', error.stack, this.CONTEXT);
-      return errorResponse('Failed to get predictions', error);
-    }
-  }
+			return successResponse(predictions, 'Прогнозы получены')
+		} catch (error: any) {
+			this.logger.error(
+				'Ошибка при получении прогнозов',
+				error instanceof Error ? error.stack : String(error),
+				this.CONTEXT
+			)
+			return errorResponse('Не удалось получить прогнозы', error)
+		}
+	}
 
-  async getPredictionById(id: number) {
-    try {
-      const prediction = await this.prisma.prediction.findUnique({
-        where: { id },
-        include: {
-          shtabel: {
-            include: {
-              sklad: true,
-            },
-          },
-        },
-      });
+	async getPredictionById(id: number) {
+		try {
+			const prediction = await this.prisma.prediction.findUnique({
+				where: { id },
+				include: {
+					shtabel: {
+						include: {
+							sklad: true,
+						},
+					},
+				},
+			})
 
-      if (!prediction) {
-        return errorResponse('Prediction not found');
-      }
+			if (!prediction) {
+				return errorResponse('Прогноз не найден')
+			}
 
-      return successResponse(prediction, 'Prediction retrieved');
-    } catch (error) {
-      this.logger.error('Error getting prediction', error.stack, this.CONTEXT);
-      return errorResponse('Failed to get prediction', error);
-    }
-  }
+			return successResponse(prediction, 'Прогноз получен')
+		} catch (error: any) {
+			this.logger.error(
+				'Ошибка при получении прогноза',
+				error instanceof Error ? error.stack : String(error),
+				this.CONTEXT
+			)
+			return errorResponse('Не удалось получить прогноз', error)
+		}
+	}
 
-  async createPrediction(shtabelId: number) {
-    try {
-      const stockpile = await this.prisma.shtabel.findUnique({
-        where: { id: shtabelId },
-        include: {
-          sklad: true,
-        },
-      });
+	async createPrediction(shtabelId: number, horizonDays = 7) {
+		try {
+			const stockpile = await this.prisma.shtabel.findUnique({
+				where: { id: shtabelId },
+				include: {
+					sklad: true,
+				},
+			})
 
-      if (!stockpile) {
-        return errorResponse('Stockpile not found');
-      }
+			if (!stockpile) {
+				return errorResponse('Штабель не найден')
+			}
 
-      // Queue prediction for processing
-      await this.queueService.publish('prediction.calculate', {
-        shtabelId,
-      });
+			if (stockpile.status !== 'ACTIVE') {
+				return errorResponse(
+					'Прогнозы можно создавать только для активных штабелей'
+				)
+			}
 
-      return successResponse(
-        { shtabelId, queued: true },
-        'Prediction queued for processing',
-      );
-    } catch (error) {
-      this.logger.error('Error queuing prediction', error.stack, this.CONTEXT);
-      return errorResponse('Failed to queue prediction', error);
-    }
-  }
+			await this.queueService.publish('prediction.calculate', {
+				shtabelId,
+				horizonDays,
+			})
 
-  async batchPredict() {
-    try {
-      // Get all active stockpiles
-      const stockpiles = await this.prisma.shtabel.findMany({
-        where: { status: 'ACTIVE' },
-      });
+			this.logger.log(
+				`Прогноз поставлен в очередь для штабеля ${shtabelId}`,
+				this.CONTEXT,
+				{
+					shtabelId,
+					horizonDays,
+				}
+			)
 
-      // Queue predictions for processing
-      await this.queueService.publish('prediction.batch', {
-        shtabelIds: stockpiles.map((s) => s.id),
-      });
+			return successResponse(
+				{ shtabelId, horizonDays, queued: true },
+				'Прогноз поставлен в очередь на обработку'
+			)
+		} catch (error: any) {
+			this.logger.error(
+				'Ошибка при постановке прогноза в очередь',
+				error instanceof Error ? error.stack : String(error),
+				this.CONTEXT,
+				{
+					shtabelId,
+				}
+			)
+			return errorResponse('Не удалось поставить прогноз в очередь', error)
+		}
+	}
 
-      return successResponse(
-        { queued: stockpiles.length },
-        'Predictions queued for processing',
-      );
-    } catch (error) {
-      this.logger.error('Error batch predicting', error.stack, this.CONTEXT);
-      return errorResponse('Failed to queue predictions', error);
-    }
-  }
+	async batchPredict() {
+		try {
+			const stockpiles = await this.prisma.shtabel.findMany({
+				where: { status: 'ACTIVE' },
+			})
+
+			await this.queueService.publish('prediction.batch', {
+				shtabelIds: stockpiles.map((s: any) => s.id),
+			})
+
+			return successResponse(
+				{ queued: stockpiles.length },
+				'Прогнозы поставлены в очередь на обработку'
+			)
+		} catch (error: any) {
+			this.logger.error(
+				'Ошибка при пакетном прогнозировании',
+				error instanceof Error ? error.stack : String(error),
+				this.CONTEXT
+			)
+			return errorResponse('Не удалось поставить прогнозы в очередь', error)
+		}
+	}
 }
-

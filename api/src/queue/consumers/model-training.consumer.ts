@@ -14,9 +14,12 @@ export class ModelTrainingConsumer implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.queueService.consume('model.train', async (message, msg) => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    try {
+      await this.queueService.consume('model.train', async (message, msg) => {
       this.logger.log(
-        `Processing model training: ${message.modelName || 'default'}`,
+        `Обработка обучения модели: ${message.modelName || 'default'}`,
         this.CONTEXT,
         {
           modelName: message.modelName,
@@ -32,13 +35,13 @@ export class ModelTrainingConsumer implements OnModuleInit {
           message.config,
         );
         this.logger.log(
-          `Model training completed: ${message.modelName}`,
+          `Обучение модели завершено: ${message.modelName}`,
           this.CONTEXT,
         );
       } catch (error) {
         this.logger.error(
-          `Model training failed: ${message.modelName}`,
-          error.stack,
+          `Обучение модели завершилось ошибкой: ${message.modelName}`,
+          (error instanceof Error ? error.stack : String(error)),
           this.CONTEXT,
           { modelName: message.modelName, error },
         );
@@ -46,7 +49,15 @@ export class ModelTrainingConsumer implements OnModuleInit {
       }
     });
 
-    this.logger.log('Model training consumer started', this.CONTEXT);
+    this.logger.log('Потребитель обучения модели запущен', this.CONTEXT);
+    } catch (error) {
+      this.logger.error(
+        'Не удалось запустить потребитель обучения модели',
+        (error instanceof Error ? error.stack : String(error)),
+        this.CONTEXT,
+        { error }
+      );
+    }
   }
 }
 

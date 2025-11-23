@@ -11,17 +11,14 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
 
 	const appLogger = app.get(AppLogger)
-	// Устанавливаем логгер для использования в хелперах
 	setResponseLogger(appLogger)
 
-	// CORS configuration
 	const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173'
 	app.enableCors({
 		origin: corsOrigin.split(','),
 		credentials: true,
 	})
 
-	// Global validation pipe
 	app.useGlobalPipes(
 		new ValidationPipe({
 			whitelist: true,
@@ -33,15 +30,13 @@ async function bootstrap() {
 		})
 	)
 
-	// Global interceptors and filters
 	app.useGlobalInterceptors(new LoggingInterceptor(appLogger))
 	app.useGlobalFilters(new AllExceptionsFilter(appLogger))
-
-	// Swagger documentation
 	const config = new DocumentBuilder()
 		.setTitle('Coal Fire Predictor API')
 		.setDescription('API for predicting coal self-ignition in storage yards')
 		.setVersion('1.0')
+		.addTag('System', 'Системные endpoints')
 		.addTag('auth', 'Аутентификация')
 		.addTag('user', 'Управление пользователями')
 		.addTag('data', 'Импорт данных')
@@ -64,13 +59,12 @@ async function bootstrap() {
 	appLogger.log(`API сервер запущен на порту ${apiPort}`, 'Bootstrap')
 }
 
-// Глобальный захват ошибок
 process.on('unhandledRejection', (reason, promise) => {
-	console.error('🚨 Unhandled Rejection:', reason)
+	console.error('🚨 Необработанное отклонение промиса:', reason)
 })
 
 process.on('uncaughtException', error => {
-	console.error('🚨 Uncaught Exception:', error)
+	console.error('🚨 Необработанное исключение:', error)
 })
 
 void bootstrap()

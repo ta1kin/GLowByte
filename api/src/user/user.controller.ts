@@ -1,22 +1,37 @@
-import { Controller, Get, Put, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { UserService } from './user.service';
+import { Controller, Get, Put, Body, Req, UnauthorizedException } from '@nestjs/common'
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger'
+import { Request } from 'express'
+import { UserService } from './user.service'
+import { UpdateUserSettingsDto } from './dto'
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+	constructor(private readonly userService: UserService) {}
 
-  @Get('profile')
-  @ApiOperation({ summary: 'Get user profile' })
-  async getProfile(@Request() req: any) {
-    return this.userService.getUserProfile(req.user.id);
-  }
+	@Get('profile')
+	@ApiOperation({ summary: 'Get user profile' })
+	@ApiBearerAuth()
+	async getProfile(@Req() req: Request & { user?: { id: number } }) {
+		const userId = req.user?.id
+		if (!userId) {
+			throw new UnauthorizedException('User not authenticated')
+		}
+		return this.userService.getUserProfile(userId)
+	}
 
-  @Put('settings')
-  @ApiOperation({ summary: 'Update user settings' })
-  async updateSettings(@Request() req: any, @Body() settings: any) {
-    return this.userService.updateUserSettings(req.user.id, settings);
-  }
+	@Put('settings')
+	@ApiOperation({ summary: 'Update user settings' })
+	@ApiBearerAuth()
+	async updateSettings(
+		@Req() req: Request & { user?: { id: number } },
+		@Body() settings: UpdateUserSettingsDto,
+	) {
+		const userId = req.user?.id
+		if (!userId) {
+			throw new UnauthorizedException('User not authenticated')
+		}
+		return this.userService.updateUserSettings(userId, settings)
+	}
 }
 

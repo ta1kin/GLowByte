@@ -1,12 +1,15 @@
-import { Module } from '@nestjs/common';
-import { PredictionController } from './prediction.controller';
-import { PredictionService } from './prediction.service';
-import { MlService } from './ml.service';
+import { Module, forwardRef } from '@nestjs/common'
+import { PrismaModule } from '../../prisma/prisma.module'
+import { LoggerModule } from '../common/logger/logger.module'
+import { QueueModule } from '../queue/queue.module'
+import { MlService } from './ml.service'
+import { PredictionController } from './prediction.controller'
+import { PredictionService } from './prediction.service'
 
 @Module({
-  controllers: [PredictionController],
-  providers: [PredictionService, MlService],
-  exports: [PredictionService, MlService],
+	imports: [PrismaModule, forwardRef(() => QueueModule), LoggerModule],
+	controllers: [PredictionController],
+	providers: [PredictionService, MlService],
+	exports: [PredictionService, MlService],
 })
 export class PredictionModule {}
-

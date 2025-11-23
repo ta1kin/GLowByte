@@ -1,41 +1,24 @@
-.vscode/
-api/.vscode/
-bot/.vscode/
-client/.vscode/
-**/.vscode/
-
-api/node_modules/
-bot/node_modules/
-client/node_modules/
-**/node_modules/
-
-api/dist/
-bot/dist/
-client/dist/
-**/dist/
-
-api/ssl/
-bot/ssl/
-client/ssl/
-nginx/ssl/
-**/ssl/
-
-bot/.env
-api/.env
-client/.env
+# Переменные окружения
 .env
-**/.env
+.env.local
+.env.*.local
+api/.env
+bot/.env
+ml-service/.env
 
-**/*.crt
-**/*.key
-**/*.pem
+# SSL сертификаты
+nginx/ssl/*.pem
+nginx/ssl/*.key
+nginx/ssl/*.crt
 
-# Logs
-**/logs/
-api/logs/
-bot/logs/
+# Логи
+nginx/logs/*
+!nginx/logs/.gitkeep
 
-# Documentation
-**/*.md
-!README.md
+# Кеш
+nginx/cache/*
+!nginx/cache/.gitkeep
 
+# Certbot
+nginx/certbot/*
+!nginx/certbot/.gitkeep

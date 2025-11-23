@@ -1,32 +1,36 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2022",
-    "declaration": true,
-    "removeComments": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "paths": {
-      "~/*": ["./*"],
-      "@/*": ["src/*"]
-    },
-    "strictPropertyInitialization": false,
-    "incremental": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
-  },
-  "include": ["src/**/*", "src/types/**/*.d.ts"],
-  "exclude": ["node_modules", "dist"]
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "ES2022",
+		"declaration": true,
+		"removeComments": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"paths": {
+			"~/*": ["./*"],
+			"@/*": ["src/*"]
+		},
+		"strictPropertyInitialization": false,
+		"incremental": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"strictNullChecks": true,
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitAny": true,
+		"strictBindCallApply": false,
+		"noFallthroughCasesInSwitch": false
+	},
+	"include": [
+		"src/**/*",
+		"src/types/**/*.d.ts",
+		"prisma/prisma.service.ts",
+		"prisma/prisma.module.ts"
+	],
+	"exclude": ["node_modules", "dist"]
 }
-

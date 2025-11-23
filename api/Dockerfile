@@ -1,50 +1,40 @@
-FROM node:20-alpine AS builder
+# Сборка
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Install bun
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:${PATH}"
+COPY package.json ./
+RUN npm install --legacy-peer-deps
 
-# Copy package files
-COPY package.json bun.lockb* ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN bun install --frozen-lockfile
-
-# Copy source code
 COPY . .
+RUN npx prisma generate
+RUN npm run build
 
-# Generate Prisma Client
-RUN bunx prisma generate
+# Продуктивный образ
+FROM node:22-alpine
 
-# Build application
-RUN bun run build
-
-# Production stage
-FROM node:20-alpine
+# Устанавливаем netcat для проверки БД
+RUN apk add --no-cache netcat-openbsd
 
 WORKDIR /app
 
-# Install bun
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:${PATH}"
+COPY package.json ./
+RUN npm install --omit=dev --legacy-peer-deps
 
-# Copy package files
-COPY package.json bun.lockb* ./
-COPY prisma ./prisma/
-
-# Install production dependencies only
-RUN bun install --frozen-lockfile --production
-
-# Copy built application
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/nest-cli.json ./nest-cli.json
 
-# Expose port
+# Copy and fix startup script
+COPY start.sh /app/start.sh
+RUN sed -i 's/\r$//' /app/start.sh && chmod +x /app/start.sh
+
 EXPOSE 3000
 
-# Start application
-CMD ["bun", "run", "start:prod"]
-
+CMD ["sh", "/app/start.sh"]
