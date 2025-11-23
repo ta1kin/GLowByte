@@ -1,5 +1,11 @@
-import { mainStore } from './main';
-import type { ISettingsState } from './slices/types';
+import type {
+    ISettingsState,
+    IPreviewState,
+    IEstimationState,
+    IHistoryState,
+} from './slices/types'
+
+import { mainStore } from './main'
 
 
 export enum EMainActionTypes {
@@ -9,6 +15,9 @@ export enum EMainActionTypes {
 
 export interface IMainState {
     settings: ISettingsState
+    preview: IPreviewState
+    estimation: IEstimationState
+    history: IHistoryState
 }
 
 export type TMainDispatch = typeof mainStore.dispatch

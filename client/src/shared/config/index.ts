@@ -5,6 +5,8 @@ import {
     INNER_ANIME_S,
     SNACK_COUNT,
     SNACK_TIMEOUT,
+    SNACK_ORIENT,
+    SEALING_LVL_SETTING,
 } from './ui';
 
 import {
@@ -27,6 +29,8 @@ export {
     INNER_ANIME_S,
     SNACK_COUNT,
     SNACK_TIMEOUT,
+    SNACK_ORIENT,
+    SEALING_LVL_SETTING,
 
     previewRoute,
     homeGlobRoute,
