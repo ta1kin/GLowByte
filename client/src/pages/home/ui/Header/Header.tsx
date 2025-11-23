@@ -13,8 +13,14 @@ function HLHeader(): JSX.Element {
     return (
         <header className={ styles['home-layout__header'] }>
             <div className={ styles['header-logo'] }>
-                <img src={ SvgLogo } alt="logo" />
-                <div  className={ styles['header-logo__text'] }>
+                <img
+                    decoding="async"
+                    loading="lazy"
+                    alt="logo"
+                    className={ styles['header-logo__img'] }
+                    src={ SvgLogo }
+                />
+                <div className={ styles['header-logo__text'] }>
                     <h3>ПироУглеКонтроль</h3>
                     <p>Прогнозирование риска самовозгорания угля</p>
                 </div>

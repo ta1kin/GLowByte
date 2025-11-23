@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import { type JSX, useEffect } from 'react'
 import { Button } from '@mui/material'
 
 import styles from './NotFound.module.scss'
@@ -12,6 +12,10 @@ function NotFoundPage(): JSX.Element {
             window.location.href = '/';
         }
     }
+
+    useEffect(() => {
+        document.title = "Не найдено"
+    }, [])
 
     return (
         <div className={ styles['not-found-page'] }>

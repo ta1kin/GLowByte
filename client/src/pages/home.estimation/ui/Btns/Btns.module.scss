@@ -7,5 +7,9 @@
         display: grid;
         grid-template-columns: 5fr clamp(150px, 2vw, 200px);
         gap: 7.5px;
+
+        @media (max-width: 390px ) {
+            grid-template-columns: 1fr;
+        }
     }
 }

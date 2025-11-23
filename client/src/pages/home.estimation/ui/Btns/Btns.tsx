@@ -23,6 +23,15 @@ function Btns(): JSX.Element {
         if(false) {
             navigate(errorRoute)
         }
+
+        // Отработать успешный ответ или нет (сейчас имитация успеха)
+        if(true) {
+            const resultHtm = document.getElementById('hest-res')
+            resultHtm?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     }
 
     function handleClear(): void {
