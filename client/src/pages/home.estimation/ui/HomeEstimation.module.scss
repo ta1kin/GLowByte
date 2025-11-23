@@ -6,6 +6,7 @@
         display: grid;
         gap: var(--this-gap);
         grid-template-columns: 3fr clamp(250px, 25%, 350px);
+        overflow: auto;
 
         @media (max-width: 750px) {
             grid-template-columns: 1fr;

@@ -1,0 +1,35 @@
+#root {
+    .MuiBottomNavigation-root {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        height: 45px;
+        margin-top: 40px;
+        border-radius: 14px;
+        padding: 5.5px;
+        background-color: #F2F2F2;
+
+        .MuiButtonBase-root {
+            max-width: 100%;
+            background: transparent;
+            color: #000000;
+
+            &.Mui-selected {
+                color: #ffffff;
+
+                &.first {
+                    background: linear-gradient(to right, #5415E8, #2F0C82);
+                }
+
+                &.second {
+                    background: linear-gradient(to right, #8E14D9, #4B0B73);
+                }
+
+                &.third {
+                    background: linear-gradient(to right, #21DA14, #12740B);
+                }
+            }
+        }
+    }
+}

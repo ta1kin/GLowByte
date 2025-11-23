@@ -2,7 +2,8 @@ import { UIBlock } from "@/shared/ui/Block";
 import type { JSX } from "react";
 import { useState } from "react";
 
-import styles from "./Geometry.module.scss";
+import SvgBoxStroke from '@/shared/assets/icons/box-stroke.svg'
+import styles from './Geometry.module.scss'
 
 const MARK = [
   { id: "", name: "Выберите марку" },

@@ -1,7 +1,7 @@
 import { UIBlock } from '@/shared/ui/Block'
 import type { JSX } from 'react'
 
-import SvgWarn from '@/shared/assets/icons/warn.svg';
+import SvgSearch from '@/shared/assets/icons/search.svg'
 import styles from './Results.module.scss'
 
 
@@ -9,9 +9,9 @@ function Results(): JSX.Element {
     return (
         <section style={{ width: '100%' }}>
             <UIBlock
-                bordered="top"
-                iconSrc={ SvgWarn }
-                headTxt="Результаты оценки риска"
+                type="green"
+                iconSrc={ SvgSearch }
+                headTxt="Результаты поиска"
             >
                 <></>
             </UIBlock>

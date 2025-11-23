@@ -1,47 +1,9 @@
-// import { UIBlock } from '@/shared/ui/Block'
-// import type { JSX } from 'react'
-
-// import styles from './Operations.module.scss'
-
-// const FREQUENCY1 = [
-//   { id: "", name: "Выберите частоту" },
-//   { id: "1", name: "Частота 1" },
-//   { id: "2", name: "Частота 2" },
-//   { id: "3", name: "Частота 3" },
-// ]
-
-// const FREQUENCY2 = [
-//   { id: "", name: "Выберите частоту" },
-//   { id: "1", name: "Частота 1" },
-//   { id: "2", name: "Частота 2" },
-//   { id: "3", name: "Частота 3" },
-// ]
-
-// function Operations(): JSX.Element {
-//     return (
-//         <section style={{ width: '100%' }}>
-//             <UIBlock
-//                 type="green"
-//                 iconSrc=""
-//                 headTxt="Операционные / Технологические параметры"
-//             >
-                
-//             </UIBlock>
-//         </section>
-//     )
-// }
-
-// export default Operations
-
-
-
-
-
 import { UIBlock } from '@/shared/ui/Block';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
 import styles from './Operations.module.scss';
+import SvgSettings from '@/shared/assets/icons/settings.svg'
 
 const FREQUENCY1 = [
   { id: '', name: 'Выберите частоту' },
