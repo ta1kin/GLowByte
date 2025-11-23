@@ -3,6 +3,7 @@ import { Current } from './Current'
 import { Geometry } from './Geometry'
 import { Operations } from './Operations'
 import { Params } from './Params'
+import { Btns } from './Btns'
 import { Results } from './Results'
 
 import styles from './HomeEstimation.module.scss'
@@ -16,6 +17,7 @@ function HomeEstimationPage(): JSX.Element {
                 <Geometry />
                 <Operations />
                 <Current />
+                <Btns />
             </main>
             <aside className={ styles['home-estimation-page__aside'] }>
                 <Results />

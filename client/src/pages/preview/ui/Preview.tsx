@@ -1,5 +1,7 @@
 import { UIBlock } from "@/shared/ui";
+import { useSnackbar } from "notistack";
 import { estimationRoute } from "@/shared/config";
+import { errorRoute } from "@/shared/config";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import type { JSX } from "react";
@@ -24,6 +26,9 @@ const REGION = [
 
 function PreviewPage(): JSX.Element {
   const navigate = useNavigate();
+
+  const { enqueueSnackbar } = useSnackbar();
+  const [load, setLoad] = useState<boolean>(false)
   const [selectedWarehouse, setSelectedWarehouse] = useState<string>("");
   const [selectedRegion, setselectedRegion] = useState<string>("");
   const [inputLlatitude, setInputLlatitude] = useState<number>(0);
@@ -42,6 +47,20 @@ function PreviewPage(): JSX.Element {
   const handleInputLongitude = (event: any) => {
     setInputLongitude(event.target.value);
   };
+
+  async function handleGoPredict(): Promise<void> {
+    setLoad(true)
+    // Пишешь логику отправки запроса на сервер
+    enqueueSnackbar('Тут сообщение результата', { variant: 'success' })
+    setLoad(false);
+
+    // Тут если не ошибка, то дальше, если ошибка, то рна страницу ошибок
+    if(true) {
+        navigate(estimationRoute)
+    } else {
+        navigate(errorRoute)
+    }
+  }
 
   return (
     <div className={styles["preview-page"]}>
@@ -110,8 +129,11 @@ function PreviewPage(): JSX.Element {
             </div>
             <Button
               fullWidth
+              className="square"
               variant="contained"
-              onClick={() => navigate(estimationRoute)}
+              loadingPosition="start"
+              loading={load}
+              onClick={handleGoPredict}
             >
               Поиск
             </Button>
