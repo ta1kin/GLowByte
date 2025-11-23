@@ -4,12 +4,23 @@ import {
     configureStore,
 } from '@reduxjs/toolkit'
 
-import { settingsReducer } from './slices'
+import {
+    settingsReducer,
+    previewReducer,
+    estimationReducer,
+    historyReducer,
+} from './slices'
+
+import { persistReducer, persistStore } from 'redux-persist'
+import { persistConfig } from './persist'
 import { type IMainState, EMainActionTypes } from './types'
 
 
 const presentReducer: Reducer<IMainState> = combineReducers({
-    settings: settingsReducer
+    settings: settingsReducer,
+    preview: previewReducer,
+    estimation: estimationReducer,
+    history: historyReducer
 })
 
 const mainReducer: Reducer<IMainState> = (state, action) => {
@@ -28,8 +39,14 @@ const mainReducer: Reducer<IMainState> = (state, action) => {
     return presentReducer(state, action);
 }
 
+const persistedReducer = persistReducer(persistConfig, mainReducer)
+
 export const mainStore = configureStore({
-    reducer: mainReducer,
+    reducer: persistedReducer,
+    middleware: (gDM) =>
+        gDM({ serializableCheck: false }),
 })
+
+export const persStore = persistStore(mainStore)
 
 export default mainStore 

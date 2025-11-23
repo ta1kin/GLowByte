@@ -8,7 +8,7 @@ import styles from "./Results.module.scss";
 
 function Results(): JSX.Element {
   return (
-    <section style={{ width: "100%" }} className={styles["results"]}>
+    <section id="hest-res" style={{ width: "100%" }} className={styles["results"]}>
       <UIBlock
         bordered="top"
         iconSrc={SvgWarn}

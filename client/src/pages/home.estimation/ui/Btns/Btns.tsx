@@ -27,6 +27,7 @@ function Btns(): JSX.Element {
         // Отработать успешный ответ или нет (сейчас имитация успеха)
         if(true) {
             const resultHtm = document.getElementById('hest-res')
+            
             resultHtm?.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
