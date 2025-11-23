@@ -8,6 +8,7 @@ import { type JSX, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material'
 
+import styles from "./Nav.module.scss";
 
 function HLNav(): JSX.Element {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ function HLNav(): JSX.Element {
 
     return (
         <nav className="home-layout__nav">
-ё           <Box className="nav-bar">
+           <Box className="nav-bar">
                 <BottomNavigation
                     showLabels
                     value={value}
