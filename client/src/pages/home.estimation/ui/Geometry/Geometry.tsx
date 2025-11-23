@@ -2,8 +2,9 @@ import { UIBlock } from "@/shared/ui/Block";
 import type { JSX } from "react";
 import { useState } from "react";
 
-import SvgBoxStroke from '@/shared/assets/icons/box-stroke.svg'
-import styles from './Geometry.module.scss'
+import SvgBoxStroke from "@/shared/assets/icons/box-stroke.svg";
+import styles from "./Geometry.module.scss";
+import { Badge } from "@mui/material";
 
 const MARK = [
   { id: "", name: "Выберите марку" },
@@ -138,7 +139,7 @@ function Geometry(): JSX.Element {
               </select>
             </div>
 
-            <div className={ styles["full-width"] }>
+            <div className={styles["full-width"]}>
               <h4>Расстояние до ближайшего штабеля, м</h4>
               <input
                 value={distance || ""}
@@ -150,6 +151,7 @@ function Geometry(): JSX.Element {
                 placeholder="0.0"
               />
             </div>
+            
             <div>
               <h4>Укрытие / Защита</h4>
               <div className={styles["radio-group"]}>
