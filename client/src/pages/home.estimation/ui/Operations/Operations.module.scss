@@ -94,7 +94,7 @@
           &::after {
             content: "✓";
             position: absolute;
-            top: 30%;
+            top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
@@ -123,7 +123,7 @@
         width: 20px;
         height: 20px;
         border: 1px solid #ccc;
-        border-radius: 3px;
+        border-radius: 50%;
         background-color: #fff;
         cursor: pointer;
         position: relative;
@@ -134,7 +134,7 @@
           background-color: black;
 
           &::after {
-            content: "✓";
+            content: "";
             color: white;
             position: absolute;
             top: 20%;

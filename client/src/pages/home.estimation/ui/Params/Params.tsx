@@ -5,7 +5,6 @@ import { useState } from "react";
 import SvgBox from "@/shared/assets/icons/box.svg";
 import styles from "./Params.module.scss";
 
-
 const MARK = [
   { id: "", name: "Выберите марку" },
   { id: "1", name: "Марка 1" },
