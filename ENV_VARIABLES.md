@@ -150,6 +150,31 @@ ENVIRONMENT=production
 | `API_URL` | URL API сервиса | Нет | `http://localhost:3000` |
 | `ENVIRONMENT` | Окружение | Нет | `development` |
 
+## client/.env
+
+Создайте файл `client/.env` в директории `client/`:
+
+```env
+# Vite Configuration
+VITE_HOST=0.0.0.0
+VITE_MODE=prod
+VITE_DOMAIN=vmestedate.ru
+VITE_PORT=5174
+
+# API Configuration
+VITE_API_URL=https://vmestedate.ru/api
+```
+
+### Описание переменных
+
+| Переменная | Описание | Обязательно | Значение по умолчанию |
+|------------|----------|-------------|----------------------|
+| `VITE_HOST` | Хост для Vite сервера | Да | `0.0.0.0` |
+| `VITE_MODE` | Режим работы (dev, test, prod) | Да | `prod` |
+| `VITE_DOMAIN` | Домен приложения | Да | `vmestedate.ru` |
+| `VITE_PORT` | Порт для Vite сервера | Да | `5174` |
+| `VITE_API_URL` | URL API сервиса | Да | `https://vmestedate.ru/api` |
+
 ## Быстрая настройка
 
 ### 1. Скопируйте примеры файлов
@@ -166,6 +191,9 @@ cp bot/.env.example bot/.env
 
 # ML Service .env
 cp ml-service/.env.example ml-service/.env
+
+# Client .env
+cp client/.env.example client/.env
 ```
 
 ### 2. Заполните обязательные переменные
@@ -186,6 +214,11 @@ cp ml-service/.env.example ml-service/.env
 
 **В `ml-service/.env`:**
 - `DATABASE_URL` - должен соответствовать настройкам из корневого `.env`
+
+**В `client/.env`:**
+- `VITE_API_URL` - URL API сервиса (для production: `https://vmestedate.ru/api`)
+- `VITE_DOMAIN` - домен приложения (для production: `vmestedate.ru`)
+- `VITE_MODE` - режим работы (`prod` для production)
 
 ### 3. Для локальной разработки
 
@@ -220,5 +253,8 @@ cat bot/.env
 
 # Проверка ML Service .env
 cat ml-service/.env
+
+# Проверка Client .env
+cat client/.env
 ```
 

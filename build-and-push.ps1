@@ -50,6 +50,7 @@ function Build-AndPush {
 Build-AndPush -Service "api" -Context "./api"
 Build-AndPush -Service "bot" -Context "./bot"
 Build-AndPush -Service "ml-service" -Context "./ml-service"
+Build-AndPush -Service "client" -Context "./client"
 
 Write-Host ""
 Write-Host "=========================================" -ForegroundColor Green

@@ -60,10 +60,10 @@ const previewSlice = createSlice({
             .addCase(sendPreviewData.pending, _ => {
                 console.log("Передача preview на api")
             })
-            .addCase(sendPreviewData.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(sendPreviewData.fulfilled, (_state, _action: PayloadAction<any>) => {
                 console.log("Успешная передача preview на api")
             })
-            .addCase(sendPreviewData.rejected, (state, action: PayloadAction<any>) => {
+            .addCase(sendPreviewData.rejected, (_state, action: PayloadAction<any>) => {
                 console.log("Ошибка отправки preview на api: ", action.payload || "Неизвестно")
             })
     },

@@ -1,7 +1,5 @@
 import {
     createSlice,
-    createAsyncThunk,
-    type PayloadAction,
 } from '@reduxjs/toolkit'
 
 import type { ISettingsState } from './types'

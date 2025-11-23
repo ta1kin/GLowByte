@@ -1,6 +1,5 @@
 import type {
     IHStateParams,
-    IHStateResItem,
     IHistoryState,
 } from './types'
 
@@ -77,10 +76,10 @@ const historySlice = createSlice({
             .addCase(getHistory.pending, _ => {
                 console.log("Получение history c api")
             })
-            .addCase(getHistory.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(getHistory.fulfilled, (_state, _action: PayloadAction<any>) => {
                 console.log("Успешное получение history c api")
             })
-            .addCase(getHistory.rejected, (state, action: PayloadAction<any>) => {
+            .addCase(getHistory.rejected, (_state, action: PayloadAction<any>) => {
                 console.log("Ошибка получения history c api: ", action.payload || "Неизвестно")
             })
     },

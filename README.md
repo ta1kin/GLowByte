@@ -306,6 +306,7 @@ Endpoints:
 .\build-and-push-api.ps1 your_dockerhub_username
 .\build-and-push-bot.ps1 your_dockerhub_username
 .\build-and-push-ml-service.ps1 your_dockerhub_username
+.\build-and-push-client.ps1 your_dockerhub_username
 .\build-and-push-nginx.ps1 your_dockerhub_username
 ```
 
@@ -366,7 +367,6 @@ docker-compose --profile nginx up -d nginx
 Подробнее см. `nginx/README.md`.
 
 ## Следующие шаги
-
 
 3. Добавить frontend (React Telegram Mini App)
 4. Добавить тесты

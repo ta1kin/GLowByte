@@ -184,10 +184,10 @@ const estimationSlice = createSlice({
             .addCase(sendEstimationData.pending, _ => {
                 console.log("Передача estimation на api")
             })
-            .addCase(sendEstimationData.fulfilled, (state, action: PayloadAction<any>) => {
+            .addCase(sendEstimationData.fulfilled, (_state, _action: PayloadAction<any>) => {
                 console.log("Успешная передача estimation на api")
             })
-            .addCase(sendEstimationData.rejected, (state, action: PayloadAction<any>) => {
+            .addCase(sendEstimationData.rejected, (_state, action: PayloadAction<any>) => {
                 console.log("Ошибка отправки estimation на api: ", action.payload || "Неизвестно")
             })
     },
