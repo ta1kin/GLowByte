@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import type { JSX } from "react";
 import { useState } from "react";
 
+import SvgLocation from '@/shared/assets/icons/location.svg'
 import styles from "./Preview.module.scss";
 
 const WAREHOUSES = [
@@ -45,7 +46,7 @@ function PreviewPage(): JSX.Element {
   return (
     <div className={styles["preview-page"]}>
       <div className={styles["preview-page__ctx"]}>
-        <UIBlock iconSrc="" headTxt="Склад / Местоположение">
+        <UIBlock iconSrc={ SvgLocation } headTxt="Склад / Местоположение">
           <div className={styles["block-body"]}>
             <div className={styles["block-body__ctx"]}>
               <div>

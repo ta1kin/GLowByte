@@ -8,8 +8,8 @@ import { type JSX, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material'
 
-import styles from './Nav.module.scss';
 
+import styles from "./Nav.module.scss";
 
 function HLNav(): JSX.Element {
     const navigate = useNavigate();

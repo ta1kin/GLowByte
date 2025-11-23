@@ -19,6 +19,7 @@ function HomeEstimationPage(): JSX.Element {
             </main>
             <aside className={ styles['home-estimation-page__aside'] }>
                 <Results />
+                
             </aside>
         </div>
     )
