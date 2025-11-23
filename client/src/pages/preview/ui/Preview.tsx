@@ -4,7 +4,7 @@ import { estimationRoute } from "@/shared/config";
 import { errorRoute } from "@/shared/config";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-import type { JSX } from "react";
+import { type JSX, useEffect } from "react";
 import { useState } from "react";
 
 import SvgLocation from '@/shared/assets/icons/location.svg'
@@ -61,6 +61,10 @@ function PreviewPage(): JSX.Element {
         navigate(errorRoute)
     }
   }
+
+  useEffect(() => {
+    document.title = "Начало работы"
+  }, [])
 
   return (
     <div className={styles["preview-page"]}>

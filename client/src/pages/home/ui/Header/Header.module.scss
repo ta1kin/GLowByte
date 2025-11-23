@@ -6,6 +6,7 @@
         justify-content: space-between;
         align-items: center;
         padding-block: 10px;
+        border-bottom: 1px solid #80808080;
 
         .header-logo {
             display: flex;
@@ -14,11 +15,25 @@
             justify-content: left;
             align-items: center;
 
+            &__img {
+                @media (max-width: 430px ) {
+                    scale: 0.9;
+                }
+            }
+
             &__text {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: left;
+
+                @media (max-width: 430px ) {
+                    scale: 0.9;
+                }
+                
+                @media (max-width: 380px ) {
+                    display: none;
+                }
             }
         }
     }

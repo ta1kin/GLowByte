@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import { type JSX, useEffect } from 'react'
 import { Button } from '@mui/material'
 
 import styles from './Error.module.scss'
@@ -8,6 +8,10 @@ function ErrorPage(): JSX.Element {
     function handleClick(): void {
         window.location.reload()
     }
+
+    useEffect(() => {
+        document.title = "Ошибка"
+    }, [])
 
     return (
         <div className={ styles['error-page'] }>

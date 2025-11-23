@@ -25,9 +25,13 @@ function UIBlock({
             <div className={ styles['ui-block__ctx'] }>
                 { withHeader && <div className={ styles['block-head'] }>
                     <div className={ styles['block-head__icon'] }>
-                        <img src={ iconSrc } alt="icon" />
+                        <img
+                            alt="icon"
+                            className={ styles['bhi-img'] }
+                            src={ iconSrc }
+                        />
                     </div>
-                    <h2>{ headTxt }</h2>
+                    <h3>{ headTxt }</h3>
                 </div> }
                 <div className={ styles['block-body'] }>
                     { children }
