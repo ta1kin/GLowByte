@@ -9,6 +9,7 @@ interface IUIBlockProps {
     withHeader?: boolean
     iconSrc: string
     headTxt: string
+    lowTxt?: string
     children: ReactNode
 }
 
@@ -18,6 +19,7 @@ function UIBlock({
     withHeader = true,
     iconSrc,
     headTxt,
+    lowTxt,
     children,
 }: IUIBlockProps): JSX.Element {
     return (
@@ -32,6 +34,7 @@ function UIBlock({
                         />
                     </div>
                     <h3>{ headTxt }</h3>
+                    <h6 style={{marginTop: "7px"}}>{ lowTxt }</h6>
                 </div> }
                 <div className={ styles['block-body'] }>
                     { children }

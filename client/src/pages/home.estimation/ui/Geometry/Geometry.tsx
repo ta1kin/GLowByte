@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import SvgBoxStroke from "@/shared/assets/icons/box-stroke.svg";
 import styles from "./Geometry.module.scss";
-import { Badge } from "@mui/material";
 
 const MARK = [
   { id: "", name: "Выберите марку" },
