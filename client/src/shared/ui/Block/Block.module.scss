@@ -59,7 +59,7 @@
                 align-items: center;
                 gap: var(--ctx-padding);
                 padding: var(--ctx-padding);
-                height: 60px;
+                min-height: 60px;
                 background: linear-gradient(
                     to right,
                     color-mix(
