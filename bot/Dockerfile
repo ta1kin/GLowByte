@@ -1,21 +1,24 @@
-FROM node:20-alpine
+# Сборка
+FROM node:22-alpine AS builder
 
-WORKDIR /app
-
-# Install curl and bash for bun installation
-RUN apk add --no-cache curl bash unzip
-
-# Install bun
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:${PATH}"
-
-COPY package.json bun.lockb* ./
-RUN bun install --frozen-lockfile
+WORKDIR /bot
+COPY package.json ./
+RUN npm install --legacy-peer-deps
 
 COPY . .
-RUN bun run build
+RUN npm run build
 
+# Прод
+FROM node:22-alpine
+
+WORKDIR /bot
+COPY package.json ./
+RUN npm install --omit=dev --legacy-peer-deps
+
+COPY --from=builder /bot/node_modules ./node_modules
+COPY --from=builder /bot/dist ./dist
+
+
+# Открытие порта
 EXPOSE 9000
-
-CMD ["bun", "run", "start:prod"]
-
+CMD ["node", "dist/main.js"]

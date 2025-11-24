@@ -1,7 +1,7 @@
 """
 FastAPI application for ML Service
 """
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, UploadFile, File, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
@@ -15,6 +15,8 @@ from src.database import DatabaseService, SessionLocal
 from src.model_manager import model_manager
 from src.predictor import predictor
 from src.trainer import trainer
+from src.validator import validator
+from src.csv_predictor import csv_predictor
 from sqlalchemy import text
 
 # Configure logging
@@ -87,6 +89,21 @@ class TrainResponse(BaseModel):
     test_metrics: Optional[Dict[str, Any]] = None
     metrics: Optional[Dict[str, Any]] = None
     meta: Optional[Dict[str, Any]] = None
+
+
+class ValidateResponse(BaseModel):
+    success: bool
+    metrics: Optional[Dict[str, Any]] = None
+    model_info: Optional[Dict[str, Any]] = None
+    validation_date: Optional[str] = None
+
+
+class CSVPredictionResponse(BaseModel):
+    success: bool
+    predictions: List[Dict[str, Any]]
+    statistics: Optional[Dict[str, Any]] = None
+    model_info: Optional[Dict[str, Any]] = None
+    prediction_date: Optional[str] = None
 
 
 # ============================================
@@ -400,6 +417,184 @@ async def get_model_info():
         
     except Exception as e:
         logger.error(f"Model info error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================
+# Validation Endpoint
+# ============================================
+
+@app.post("/validate", response_model=ValidateResponse)
+async def validate_model(
+    file: UploadFile = File(..., description="CSV файл с тестовыми данными"),
+    model_name: Optional[str] = Query(None, description="Название модели для валидации"),
+    model_version: Optional[str] = Query(None, description="Версия модели для валидации"),
+):
+    """
+    Валидация модели на тестовом CSV файле
+    
+    Загружает CSV файл с тестовыми данными и рассчитывает метрики точности модели.
+    CSV файл должен содержать те же колонки, что и обучающий датасет, или
+    предобработанные данные с признаками (features).
+    
+    Формат CSV файла:
+    - Должен содержать колонки: 'Максимальная температура', 'age_days', 'temp_air', 
+      'humidity', 'precip', 'temp_delta_3d'
+    - Опционально: 'target' (целевая переменная для расчета метрик классификации)
+    - Опционально: 'actual_fire_date' и 'predicted_date' (для расчета метрик дат)
+    
+    Args:
+        file: CSV файл с тестовыми данными
+        model_name: Название модели для валидации (query параметр, опционально)
+        model_version: Версия модели (query параметр, опционально)
+        
+    Returns:
+        Результаты валидации с метриками точности:
+        - accuracy, precision, recall, f1_score (если есть target)
+        - mae_days, rmse_days, accuracy_within_2d/3d/5d (если есть даты)
+        - статистика предсказаний
+    """
+    """
+    Валидация модели на тестовом CSV файле
+    
+    Загружает CSV файл с тестовыми данными и рассчитывает метрики точности модели.
+    CSV файл должен содержать те же колонки, что и обучающий датасет, или
+    предобработанные данные с признаками (features).
+    
+    Args:
+        file: CSV файл с тестовыми данными
+        model_name: Название модели для валидации (опционально, используется загруженная)
+        model_version: Версия модели (опционально, используется загруженная)
+        
+    Returns:
+        Результаты валидации с метриками точности
+    """
+    try:
+        logger.info(f"Запрос на валидацию модели. Файл: {file.filename}")
+        
+        # Проверяем тип файла
+        if not file.filename.endswith('.csv'):
+            raise HTTPException(
+                status_code=400,
+                detail="Файл должен быть в формате CSV"
+            )
+        
+        # Читаем содержимое файла
+        csv_content = await file.read()
+        
+        if len(csv_content) == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Файл пуст"
+            )
+        
+        logger.info(f"Файл загружен: {len(csv_content)} байт")
+        
+        # Выполняем валидацию
+        validation_result = validator.validate_from_csv(
+            csv_content=csv_content,
+            model_name=model_name,
+            model_version=model_version,
+        )
+        
+        logger.info("Валидация завершена успешно")
+        
+        return ValidateResponse(**validation_result)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Ошибка при валидации: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================
+# CSV Prediction Endpoint
+# ============================================
+
+@app.post("/predict/csv", response_model=CSVPredictionResponse)
+async def predict_from_csv(
+    fires: UploadFile = File(..., description="CSV файл с данными о возгораниях"),
+    supplies: UploadFile = File(..., description="CSV файл с данными о поставках"),
+    temperature: UploadFile = File(..., description="CSV файл с данными о температурах"),
+    weather: Optional[UploadFile] = File(None, description="CSV файл с погодными данными (опционально)"),
+    horizon_days: int = Query(7, description="Горизонт прогнозирования в днях", ge=1, le=30),
+):
+    """
+    Прогнозирование на основе CSV файлов
+    
+    Принимает три обязательных CSV файла в том же формате, что и датасет для обучения:
+    - fires.csv: данные о возгораниях (колонки: Склад, Штабель, Дата начала/Дата возгорания, Груз/Марка)
+    - supplies.csv: данные о поставках (колонки: Склад, Штабель, ВыгрузкаНаСклад/Дата поступления, Наим. ЕТСНГ/Марка)
+    - temperature.csv: данные о температурах (колонки: Склад, Штабель, Дата акта/Дата, Максимальная температура)
+    - weather.csv: погодные данные (опционально, колонки: date/datetime, temp_air/t, humidity, precip/precipitation)
+    
+    Для каждой записи в temperature.csv выполняется прогнозирование риска самовозгорания.
+    
+    Args:
+        fires: CSV файл с данными о возгораниях
+        supplies: CSV файл с данными о поставках
+        temperature: CSV файл с данными о температурах
+        weather: CSV файл с погодными данными (опционально)
+        horizon_days: Горизонт прогнозирования в днях (1-30, по умолчанию 7)
+        
+    Returns:
+        Результаты прогнозирования для каждой записи:
+        - predictions: список прогнозов с риском, вероятностью, предсказанной датой
+        - statistics: статистика по всем прогнозам
+        - model_info: информация о модели
+    """
+    try:
+        logger.info(f"Запрос на прогнозирование из CSV. Файлы: fires={fires.filename}, supplies={supplies.filename}, temperature={temperature.filename}")
+        
+        # Проверяем типы файлов
+        for file, name in [(fires, "fires"), (supplies, "supplies"), (temperature, "temperature")]:
+            if not file.filename.endswith('.csv'):
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Файл {name} должен быть в формате CSV"
+                )
+        
+        # Читаем содержимое файлов
+        fires_content = await fires.read()
+        supplies_content = await supplies.read()
+        temperature_content = await temperature.read()
+        weather_content = None
+        
+        if weather and weather.filename:
+            if not weather.filename.endswith('.csv'):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Файл weather должен быть в формате CSV"
+                )
+            weather_content = await weather.read()
+        
+        # Проверяем, что файлы не пусты
+        if len(fires_content) == 0 or len(supplies_content) == 0 or len(temperature_content) == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Один или несколько CSV файлов пусты"
+            )
+        
+        logger.info(f"Файлы загружены: fires={len(fires_content)} байт, supplies={len(supplies_content)} байт, temperature={len(temperature_content)} байт")
+        
+        # Выполняем прогнозирование
+        prediction_result = csv_predictor.predict_from_csv(
+            fires_csv=fires_content,
+            supplies_csv=supplies_content,
+            temperature_csv=temperature_content,
+            weather_csv=weather_content,
+            horizon_days=horizon_days,
+        )
+        
+        logger.info(f"Прогнозирование завершено: {len(prediction_result['predictions'])} предсказаний")
+        
+        return CSVPredictionResponse(**prediction_result)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Ошибка при прогнозировании из CSV: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 

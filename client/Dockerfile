@@ -24,4 +24,6 @@ RUN bun install -g serve
 
 EXPOSE 5174
 
+# serve по умолчанию слушает на всех интерфейсах (0.0.0.0)
+# Явно указываем порт 5174 для serve
 CMD ["serve", "-s", "dist", "-l", "5174"]

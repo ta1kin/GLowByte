@@ -7,11 +7,8 @@ import { AppService } from './app.service'
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 
-	@Get()
-	@ApiOperation({ summary: 'Root endpoint' })
-	getRoot() {
-		return this.appService.getRoot()
-	}
+	// Корневой endpoint убран, так как корневой путь должен обрабатываться фронтендом
+	// Используйте /api/health для проверки здоровья API
 
 	@Get('health')
 	@ApiOperation({ summary: 'Health check' })

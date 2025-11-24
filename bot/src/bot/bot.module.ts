@@ -8,10 +8,19 @@ import { BotUpdate } from './bot.update';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      // В Docker переменные передаются через environment, не через .env файл
+      // envFilePath: '.env',
     }),
     TelegrafModule.forRoot({
-      token: process.env.TELEGRAM_BOT_TOKEN || '',
+      token: (() => {
+        const token = process.env.TELEGRAM_BOT_TOKEN;
+        if (!token) {
+          console.error('❌ TELEGRAM_BOT_TOKEN не установлен!');
+          console.error('Установите переменную TELEGRAM_BOT_TOKEN в корневом .env файле или через docker-compose.yml');
+          throw new Error('TELEGRAM_BOT_TOKEN is required');
+        }
+        return token;
+      })(),
     }),
   ],
   providers: [BotService, BotUpdate],
