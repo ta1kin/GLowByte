@@ -2,10 +2,12 @@ import { UIBlock } from "@/shared/ui";
 import { useSnackbar } from "notistack";
 import { estimationRoute } from "@/shared/config";
 import { errorRoute } from "@/shared/config";
+import { setPreview } from "@/app/store/slices";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-import { type JSX, useEffect } from "react";
-import { useState } from "react";
+import {useDispatch, useSelector} from 'react-redux';
+import { type JSX, useEffect, useState } from "react";
+import type { IMainState, TMainDispatch } from "@/app/store";
 
 import SvgLocation from '@/shared/assets/icons/location.svg'
 import styles from "./Preview.module.scss";
@@ -25,27 +27,27 @@ const REGION = [
 ];
 
 function PreviewPage(): JSX.Element {
+  const previewState = useSelector((state: IMainState) => state.preview);
   const navigate = useNavigate();
+  const dispatch = useDispatch<TMainDispatch>();
 
   const { enqueueSnackbar } = useSnackbar();
   const [load, setLoad] = useState<boolean>(false)
-  const [selectedWarehouse, setSelectedWarehouse] = useState<string>("");
-  const [selectedRegion, setselectedRegion] = useState<string>("");
-  const [inputLlatitude, setInputLlatitude] = useState<number>(0);
-  const [inputLongitude, setInputLongitude] = useState<number>(0);
 
   const handleChangeWarehouse = (event: any) => {
-    setSelectedWarehouse(event.target.value);
+    dispatch(setPreview({ warehouse: event.target.value }));
+    
   };
   const handleChangeRegion = (event: any) => {
-    setselectedRegion(event.target.value);
+    dispatch(setPreview({ district: event.target.value }));
   };
 
   const handleInputLlatitude = (event: any) => {
-    setInputLlatitude(event.target.value);
+    dispatch(setPreview({ coords: {...previewState.coords, latit: event.target.value } }));
+
   };
   const handleInputLongitude = (event: any) => {
-    setInputLongitude(event.target.value);
+    dispatch(setPreview({ coords: {...previewState.coords, longit: event.target.value } }));
   };
 
   async function handleGoPredict(): Promise<void> {
@@ -76,7 +78,7 @@ function PreviewPage(): JSX.Element {
                 <h4>Склад / Площадка</h4>
                 <select
                   className={styles["select-warehouse"]}
-                  value={selectedWarehouse}
+                  value={previewState.warehouse}
                   onChange={handleChangeWarehouse}
                   required
                 >
@@ -94,7 +96,7 @@ function PreviewPage(): JSX.Element {
                 <h4>Регион / Местоположение</h4>
                 <select
                   className={styles["select-warehouse"]}
-                  value={selectedRegion}
+                  value={previewState.district}
                   onChange={handleChangeRegion}
                   required
                 >
@@ -111,7 +113,7 @@ function PreviewPage(): JSX.Element {
               <div>
                 <h4>Координаты (опционально)</h4>
                 <input
-                  value={inputLlatitude}
+                  value={previewState.coords?.latit || ""}
                   onChange={handleInputLlatitude}
                   type="text"
                   className={styles["select-warehouse"]}
@@ -122,7 +124,7 @@ function PreviewPage(): JSX.Element {
               <div>
                 <h4>&nbsp;</h4>
                 <input
-                  value={inputLongitude}
+                  value={previewState.coords?.longit || ""}
                   onChange={handleInputLongitude}
                   type="text"
                   className={styles["select-warehouse"]}

@@ -8,14 +8,14 @@ export enum ESealingLevel {
 export interface ISettingsState {}
 
 export interface ICoords {
-    latit: number
-    longit: number
+    latit: number | null
+    longit: number | null
 }
 
 export interface IPreviewState {
     warehouse: string
     district: string
-    coords: ICoords | null
+    coords: ICoords
 }
 
 export interface IEStateParams {
@@ -63,11 +63,11 @@ export interface IEStateCurrent {
 }
 
 export interface IEStateResult {
-    sealingLevel: ESealingLevel
-    predProb: number
-    horizProb: string
-    critTime: string
-    recomendations: string[]
+  sealingLevel: ESealingLevel;  
+  predProb: number;              
+  horizonDays: number;          
+  critTime: string;              
+  recommendations: string[];     
 }
 
 export interface IEstimationState {

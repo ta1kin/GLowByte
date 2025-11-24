@@ -1,47 +1,58 @@
 import { UIBlock } from '@/shared/ui/Block';
 import type { JSX } from 'react';
-import { useState } from 'react';
-
+import { useDispatch, useSelector } from 'react-redux';
+import type { IMainState, TMainDispatch } from '@/app/store';
+import { setCurrent } from '@/app/store/slices/estimation';
 import SvgDeg from '@/shared/assets/icons/deg.svg';
 import styles from './Current.module.scss';
 
+interface IInterTempUnit {
+  depth: string;
+  temp: string;
+}
 
 function Current(): JSX.Element {
-    
-  const [innerTemps, setInnerTemps] = useState([
-    { depth: '', temp: '' },
-    { depth: '', temp: '' },
-    { depth: '', temp: '' },
-  ]);
+  const currentState = useSelector((state: IMainState) => state.estimation);
+  const dispatch = useDispatch<TMainDispatch>();
 
-  const [surfaceTemp, setSurfaceTemp] = useState<string>('');
-  const [dangerSigns, setDangerSigns] = useState<string[]>([]);
-  const [reformatted, setReformatted] = useState<string>('');
-  const [watered, setWatered] = useState<string>('');
+  
+  const interTempUnit = currentState.current?.interTempUnit || [];
+  const safeInterTempUnit = Array(3)
+    .fill(null)
+    .map((_, i) => interTempUnit[i] || { depth: '', temp: '' });
 
-  const handleInnerTempChange = (index: number, field: 'depth' | 'temp', value: string) => {
-    const newTemps = [...innerTemps];
-    newTemps[index][field] = value;
-    setInnerTemps(newTemps);
+  const handleInterTempChange = (
+    index: number,
+    field: 'depth' | 'temp',
+    value: string
+  ) => {
+    const newInterTempUnit = [...safeInterTempUnit];
+    newInterTempUnit[index] = {
+      ...newInterTempUnit[index],
+      [field]: value,
+    };
+    dispatch(setCurrent({ interTempUnit: newInterTempUnit }));
   };
 
-  const handleDangerChange = (id: string) => {
-    setDangerSigns((prev) =>
-      prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id]
-    );
+  const handleDangerSignChange = (id: string) => {
+    const currentSigns = currentState.current?.signsDanger || [];
+    const newSigns = currentSigns.includes(id)
+      ? currentSigns.filter((sign) => sign !== id)
+      : [...currentSigns, id];
+    dispatch(setCurrent({ signsDanger: newSigns }));
+  };
+
+  const handleSurfTempChange = (value: string) => {
+    const numValue = value === '' ? null : Number(value);
+    dispatch(setCurrent({ surfTemp: isNaN(numValue as number) ? null : numValue }));
   };
 
   return (
     <section style={{ width: '100%' }}>
-      <UIBlock
-        type="red"
-        iconSrc={SvgDeg}
-        headTxt="Текущее состояние штабеля"
-      >
+      <UIBlock type="red" iconSrc={SvgDeg} headTxt="Текущее состояние штабеля">
         <div className={styles['block-body']}>
           <div className={styles['block-body__ctx']}>
+
             <div className={styles['full-width']}>
               <h4>Внутренние температуры штабеля</h4>
               <div className={styles['table-wrapper']}>
@@ -49,20 +60,24 @@ function Current(): JSX.Element {
                   <div>Глубина (м)</div>
                   <div>Температура</div>
                 </div>
-                {innerTemps.map((row, index) => (
+                {safeInterTempUnit.map((row, index) => (
                   <div key={index} className={styles['table-row']}>
                     <input
                       type="text"
                       className={styles['table-input']}
                       value={row.depth}
-                      onChange={(e) => handleInnerTempChange(index, 'depth', e.target.value)}
+                      onChange={(e) =>
+                        handleInterTempChange(index, 'depth', e.target.value)
+                      }
                       placeholder="0.0"
                     />
                     <input
                       type="text"
                       className={styles['table-input']}
                       value={row.temp}
-                      onChange={(e) => handleInnerTempChange(index, 'temp', e.target.value)}
+                      onChange={(e) =>
+                        handleInterTempChange(index, 'temp', e.target.value)
+                      }
                       placeholder="0.0"
                     />
                   </div>
@@ -75,14 +90,14 @@ function Current(): JSX.Element {
               <input
                 type="text"
                 className={styles['select-params']}
-                value={surfaceTemp}
-                onChange={(e) => setSurfaceTemp(e.target.value)}
+                value={currentState.current?.surfTemp ?? ''}
+                onChange={(e) => handleSurfTempChange(e.target.value)}
                 placeholder="0.0"
               />
             </div>
 
             <div className={styles['full-width']}>
-              <h4>Признаки опасности</h4>
+              <h4>Признаки опасности(Опционально)</h4>
               <div className={styles['checkbox-group']}>
                 {[
                   { id: 'smell', label: 'Запах горения' },
@@ -93,8 +108,8 @@ function Current(): JSX.Element {
                     <input
                       type="checkbox"
                       id={`danger-${sign.id}`}
-                      checked={dangerSigns.includes(sign.id)}
-                      onChange={() => handleDangerChange(sign.id)}
+                      checked={currentState.current?.signsDanger?.includes(sign.id) || false}
+                      onChange={() => handleDangerSignChange(sign.id)}
                       className={styles['checkbox']}
                     />
                     <label htmlFor={`danger-${sign.id}`} className={styles['checkbox-label']}>
@@ -106,56 +121,32 @@ function Current(): JSX.Element {
             </div>
 
             <div className={styles['full-width']}>
-              <h4>Недавние действия</h4>
-              
-              <div>
-                <h5>Штабель недавно перевален / переформирован?</h5>
-                <div className={styles['radio-group']}>
-                  {[
-                    { id: 'yes', label: 'Да' },
-                    { id: 'no', label: 'Нет' },
-                  ].map((option) => (
-                    <div key={option.id} className={styles['radio-item']}>
-                      <input
-                        type="radio"
-                        id={`reformatted-${option.id}`}
-                        name="reformatted"
-                        value={option.id}
-                        checked={reformatted === option.id}
-                        onChange={(e) => setReformatted(e.target.value)}
-                        className={styles['radio']}
-                      />
-                      <label htmlFor={`reformatted-${option.id}`} className={styles['radio-label']}>
-                        {option.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+              <h4>Недавние действия(Опционально)</h4>
+
+              <div className={styles['checkbox-item']}>
+                <input
+                  type="checkbox"
+                  id="reformed"
+                  checked={currentState.current?.isReformed || false}
+                  onChange={(e) => dispatch(setCurrent({ isReformed: e.target.checked }))}
+                  className={styles['checkbox']}
+                />
+                <label htmlFor="reformed" className={styles['checkbox-label']}>
+                  Штабель недавно перевален / переформирован?
+                </label>
               </div>
 
-              <div>
-                <h5>Недавно проводилось орошение / охлаждение?</h5>
-                <div className={styles['radio-group']}>
-                  {[
-                    { id: 'yes', label: 'Да' },
-                    { id: 'no', label: 'Нет' },
-                  ].map((option) => (
-                    <div key={option.id} className={styles['radio-item']}>
-                      <input
-                        type="radio"
-                        id={`watered-${option.id}`}
-                        name="watered"
-                        value={option.id}
-                        checked={watered === option.id}
-                        onChange={(e) => setWatered(e.target.value)}
-                        className={styles['radio']}
-                      />
-                      <label htmlFor={`watered-${option.id}`} className={styles['radio-label']}>
-                        {option.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+              <div className={styles['checkbox-item']}>
+                <input
+                  type="checkbox"
+                  id="oroshen"
+                  checked={currentState.current?.isOroshen || false}
+                  onChange={(e) => dispatch(setCurrent({ isOroshen: e.target.checked }))}
+                  className={styles['checkbox']}
+                />
+                <label htmlFor="oroshen" className={styles['checkbox-label']}>
+                  Недавно проводилось орошение / охлаждение?
+                </label>
               </div>
             </div>
           </div>

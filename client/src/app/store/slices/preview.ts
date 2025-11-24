@@ -14,7 +14,10 @@ const previewSliceName = 'preview'
 const initialState: IPreviewState = {
     warehouse: "",
     district: "",
-    coords: null,
+    coords: {
+        latit: null,
+        longit: null,
+    },
 }
 
 export const sendPreviewData = createAsyncThunk<

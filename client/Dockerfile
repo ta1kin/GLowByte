@@ -7,7 +7,7 @@ COPY package.json .
 RUN npm install --legacy-peer-deps
 
 COPY . .
-RUN npm run build
+RUN npm run my-build
 RUN npm run minify || echo "minify skipped"
 
 # 2 Этап: Запуск сервера

@@ -10,6 +10,7 @@ import {
 } from '@reduxjs/toolkit'
 
 import axios from 'axios'
+import type { IMainState } from '../types'
 
 
 const historySliceName = 'history'
@@ -29,19 +30,26 @@ const initialState: IHistoryState = {
 
 export const getHistory = createAsyncThunk(
     `${historySliceName}/get-history`,
-    async (_, { rejectWithValue }): Promise<any> => {
+    async (_, { getState }): Promise<'error' | null | IHStateResItem[]> => {
         try {
-            const response = await axios.post('/api/preview', { /* данные */ });
+            const rootState = getState() as IMainState
+            const histState = rootState.history
 
-            // если сервер вернул ошибку 4xx/5xx
-            if (response.status !== 200) {
-                return rejectWithValue('Ошибка сервера');
+            const url = "https://vmesstedate.ru/history"
+
+            const data = {}
+
+            const response = await axios.post(url, data)
+            
+            if (![200, 201].includes(response.status)) {
+                return null;
             }
 
             return response.data;
         } catch (err: any) {
-            // ловим сетевые или другие ошибки
-            return rejectWithValue(err.message || 'Неизвестная ошибка');
+            console.log( err )
+
+            return 'error'
         }
     }
 )
@@ -76,11 +84,16 @@ const historySlice = createSlice({
             .addCase(getHistory.pending, _ => {
                 console.log("Получение history c api")
             })
-            .addCase(getHistory.fulfilled, (_state, _action: PayloadAction<any>) => {
-                console.log("Успешное получение history c api")
+            .addCase(getHistory.fulfilled, (state, action: PayloadAction<'error' | null | IHStateResItem[]>) => {
+                if(action.payload && action.payload !== 'error') {
+                    state.result = action.payload
+                    console.log("Успешное получение history c api")
+                } else {
+                   console.log("Ошибка получения history c api: ")
+                }
             })
-            .addCase(getHistory.rejected, (_state, action: PayloadAction<any>) => {
-                console.log("Ошибка получения history c api: ", action.payload || "Неизвестно")
+            .addCase(getHistory.rejected, _ => {
+                console.log("Ошибка получения history c api: ")
             })
     },
 })
