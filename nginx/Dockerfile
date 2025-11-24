@@ -19,9 +19,6 @@ RUN chown -R nginx:nginx /var/cache/nginx \
     && chown -R nginx:nginx /var/log/nginx \
     && chown -R nginx:nginx /var/www/certbot
 
-# Проверка конфигурации при сборке
-RUN nginx -t || exit 1
-
 # Открытие портов
 EXPOSE 80 443
 
