@@ -23,11 +23,7 @@ wheels/
 .installed.cfg
 *.egg
 
-# Models
-models/*.pkl
-models/*.joblib
-models/*.h5
-models/*.json
+
 !models/.gitkeep
 
 # Environment

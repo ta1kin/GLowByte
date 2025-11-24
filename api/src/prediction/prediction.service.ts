@@ -251,6 +251,7 @@ export class PredictionService {
 			})
 
 			// Формируем ответ для клиента
+			const isPlaceholder = prediction.meta?.placeholder === true
 			const result = {
 				riskLevel: prediction.risk_level,
 				probEvent: prediction.prob_event,
@@ -262,6 +263,7 @@ export class PredictionService {
 				modelName: prediction.model_name,
 				modelVersion: prediction.model_version,
 				features: prediction.meta?.features || null,
+				isPlaceholder: isPlaceholder, // Индикатор, что используется placeholder модель
 			}
 
 			this.logger.log(
@@ -275,12 +277,37 @@ export class PredictionService {
 
 			return successResponse(result, 'Прогноз рассчитан')
 		} catch (error: any) {
+			// Определяем более понятное сообщение об ошибке
+			let errorMessage = 'Не удалось рассчитать прогноз'
+
+			if (error?.response?.status === 503) {
+				errorMessage =
+					'ML Service недоступен или модель не загружена. Пожалуйста, убедитесь, что модель обучена и загружена.'
+			} else if (error?.response?.status === 404) {
+				errorMessage = 'Эндпоинт ML Service не найден'
+			} else if (
+				error?.code === 'ECONNREFUSED' ||
+				error?.code === 'ETIMEDOUT'
+			) {
+				errorMessage =
+					'Не удалось подключиться к ML Service. Сервис может быть недоступен.'
+			} else if (error?.response?.data?.detail) {
+				errorMessage = `Ошибка ML Service: ${error.response.data.detail}`
+			}
+
 			this.logger.error(
 				'Ошибка при прямом расчете прогноза',
 				error instanceof Error ? error.stack : String(error),
-				this.CONTEXT
+				this.CONTEXT,
+				{
+					dto,
+					status: error?.response?.status,
+					statusText: error?.response?.statusText,
+					message: error?.message,
+					detail: error?.response?.data?.detail,
+				}
 			)
-			return errorResponse('Не удалось рассчитать прогноз', error)
+			return errorResponse(errorMessage, error)
 		}
 	}
 }

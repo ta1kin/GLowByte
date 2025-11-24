@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import uvicorn
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Import our modules
 from src.config import settings
@@ -210,6 +210,63 @@ async def predict(request: PredictionRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def _get_placeholder_prediction(request: DirectPredictionRequest) -> PredictionResponse:
+    """
+    Placeholder prediction when model is not available
+    Uses simple heuristics based on temperature and age
+    """
+    target_date = datetime.now()
+    max_temp = request.max_temp
+    age_days = request.age_days or 0
+    
+    # Calculate risk level based on temperature and age
+    if max_temp >= 80:
+        risk_level = "CRITICAL"
+        prob_event = 0.9
+        days_to_fire = max(1, int(7 * 0.1))
+    elif max_temp >= 60:
+        risk_level = "HIGH"
+        prob_event = 0.7
+        days_to_fire = max(2, int(7 * 0.3))
+    elif max_temp >= 40:
+        risk_level = "MEDIUM"
+        prob_event = 0.5
+        days_to_fire = max(3, int(7 * 0.5))
+    else:
+        risk_level = "LOW"
+        prob_event = 0.2
+        days_to_fire = None
+    
+    horizon_days = request.horizon_days or 7
+    
+    if days_to_fire:
+        predicted_date = target_date + timedelta(days=min(days_to_fire, horizon_days))
+        interval_low = predicted_date - timedelta(days=2)
+        interval_high = predicted_date + timedelta(days=2)
+    else:
+        predicted_date = None
+        interval_low = None
+        interval_high = None
+    
+    return PredictionResponse(
+        shtabel_id=0,
+        model_name="placeholder",
+        model_version="1.0.0",
+        predicted_date=predicted_date.isoformat() if predicted_date else None,
+        prob_event=prob_event,
+        risk_level=risk_level,
+        horizon_days=horizon_days,
+        interval_low=interval_low.isoformat() if interval_low else None,
+        interval_high=interval_high.isoformat() if interval_high else None,
+        confidence=0.5,
+        meta={
+            "placeholder": True,
+            "max_temp": max_temp,
+            "age_days": age_days,
+        },
+    )
+
+
 @app.post("/predict/direct", response_model=PredictionResponse)
 async def predict_direct(request: DirectPredictionRequest):
     """
@@ -238,17 +295,13 @@ async def predict_direct(request: DirectPredictionRequest):
         if not model_manager.is_model_loaded():
             logger.warning("Model not loaded, attempting to load default model...")
             if not model_manager.load_model("coal_fire_model", "1.0.0"):
-                raise HTTPException(
-                    status_code=503,
-                    detail="Model not available. Please train a model first."
-                )
+                logger.warning("Model not available, using placeholder prediction")
+                return _get_placeholder_prediction(request)
         
         model = model_manager.get_model()
         if not model:
-            raise HTTPException(
-                status_code=503,
-                detail="Model not available"
-            )
+            logger.warning("Model not available, using placeholder prediction")
+            return _get_placeholder_prediction(request)
         
         # Подготавливаем признаки напрямую из параметров запроса
         import pandas as pd
