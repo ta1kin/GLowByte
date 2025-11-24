@@ -2,7 +2,11 @@ import { Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import { errorRoute } from '@/shared/config';
 import { useSnackbar } from 'notistack';
+import { sendEstimationData } from '@/app/store/slices';
+import { resetEstimation } from '@/app/store/slices';
+import { useDispatch } from 'react-redux';
 import { type JSX, useState } from 'react'
+import type { TMainDispatch } from '@/app/store';
 
 import SvgArrowPulse from '@/shared/assets/icons/arrow-pulse.svg';
 import styles from './Btns.module.scss'
@@ -10,12 +14,15 @@ import styles from './Btns.module.scss'
 
 function Btns(): JSX.Element {
     const navigate = useNavigate()
+    const dispatch = useDispatch<TMainDispatch>()
     const { enqueueSnackbar } = useSnackbar()
     const [load, setLoad] = useState<boolean>(false)
 
     async function handleGetPredict(): Promise<void> {
         setLoad(true)
-        // Пишешь логику отправки запроса на сервер
+        
+        const response = await dispatch(sendEstimationData()).unwrap()
+
         enqueueSnackbar('Тут сообщение результата', { variant: 'success' })
         setLoad(false)
 
@@ -27,7 +34,7 @@ function Btns(): JSX.Element {
         // Отработать успешный ответ или нет (сейчас имитация успеха)
         if(true) {
             const resultHtm = document.getElementById('hest-res')
-            
+
             resultHtm?.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
@@ -36,6 +43,7 @@ function Btns(): JSX.Element {
     }
 
     function handleClear(): void {
+        dispatch(resetEstimation())
         enqueueSnackbar('Запрос очищен', { variant: 'info' })
     }
 

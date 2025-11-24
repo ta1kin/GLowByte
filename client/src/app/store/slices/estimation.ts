@@ -4,6 +4,7 @@ import type {
     IEStateGeometry,
     IEStateOperations,
     IEStateCurrent,
+    IEStateResult,
 } from './types'
 
 import {
@@ -70,8 +71,10 @@ export const sendEstimationData = createAsyncThunk<
     { rejectValue: string }
 >(
     `${estimationSliceName}/send-estimation-data`,
-    async (_, { rejectWithValue }): Promise<any> => {
+    async (_, { getState, rejectWithValue }): Promise<'error' | null | IEStateResult> => {
         try {
+            const url = "https://vmestedate.ru/"
+
             const response = await axios.post('/api/preview', { /* данные */ });
 
             // если сервер вернул ошибку 4xx/5xx
