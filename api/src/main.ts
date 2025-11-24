@@ -13,9 +13,12 @@ async function bootstrap() {
 	const appLogger = app.get(AppLogger)
 	setResponseLogger(appLogger)
 
+	// Установка глобального префикса для всех роутов
+	app.setGlobalPrefix('api')
+
 	const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173'
 	app.enableCors({
-		origin: corsOrigin.split(','),
+		origin: corsOrigin.split(',').map(o => o.trim()),
 		credentials: true,
 	})
 
