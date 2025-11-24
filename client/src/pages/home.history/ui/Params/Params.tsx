@@ -4,6 +4,7 @@ import { UIBlock } from "@/shared/ui/Block";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { SEALING_LVL_SETTING } from "@/shared/config";
 import { ESealingLevel } from "@/app/store/slices";
+import { getHistory } from "@/app/store/slices";
 import { setHistParams } from "@/app/store/slices";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -57,6 +58,7 @@ function Params(): JSX.Element {
 
   const dispatch = useDispatch<TMainDispatch>();
 
+  const [load, setLoad] = useState<boolean>(false)
   const [openCalendarFor, setOpenCalendarFor] = useState<"from" | "to" | null>(null);
 
   const handleSelectAreaName = (e: ChangeEvent<HTMLSelectElement>): void => {
@@ -80,6 +82,18 @@ function Params(): JSX.Element {
 
     setOpenCalendarFor(null);
   };
+
+  const handleSearchHistory = async (): Promise<void> => {
+    setLoad(true)
+
+    const response = await dispatch(getHistory()).unwrap()
+
+    if(!response || response === 'error') {
+      
+    }
+
+    setLoad(false)
+  }
 
   return (
     <section style={{ width: "100%" }}>
@@ -197,9 +211,12 @@ function Params(): JSX.Element {
             <div style={{ gridColumn: "1 / -1", marginTop: "20px" }}>
               <Button
                 className="green square"
+                loadingPosition="start"
+                loading={ load }
                 startIcon={<img src={SvgSearch} />}
                 variant="contained"
                 sx={{ width: "100%" }}
+                onClick={handleSearchHistory}
               >
                 Начать поиск
               </Button>
