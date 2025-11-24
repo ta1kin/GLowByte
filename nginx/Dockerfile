@@ -1,5 +1,9 @@
 FROM nginx:1.25-alpine
 
+# Удаление дефолтного конфига и создание пустого, чтобы entrypoint скрипт не жаловался
+RUN rm -f /etc/nginx/conf.d/default.conf && \
+    touch /etc/nginx/conf.d/default.conf
+
 # Копирование конфигурации
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
@@ -14,6 +18,9 @@ RUN mkdir -p /var/cache/nginx/proxy \
 RUN chown -R nginx:nginx /var/cache/nginx \
     && chown -R nginx:nginx /var/log/nginx \
     && chown -R nginx:nginx /var/www/certbot
+
+# Проверка конфигурации при сборке
+RUN nginx -t || exit 1
 
 # Открытие портов
 EXPOSE 80 443
