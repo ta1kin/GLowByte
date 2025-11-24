@@ -2,13 +2,19 @@
 
 import { UIBlock } from "@/shared/ui/Block";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import { SEALING_LVL_SETTING } from "@/shared/config";
+import { ESealingLevel } from "@/app/store/slices";
+import { getHistory } from "@/app/store/slices";
+import { setHistParams } from "@/app/store/slices";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { useDispatch, useSelector } from "react-redux";
 import { ru } from "date-fns/locale/ru";
-import { type JSX, useState } from "react";
+import { type JSX, type ChangeEvent, useState } from "react";
 import SvgSearch from "@/shared/assets/icons/search.svg";
 import styles from "./Params.module.scss";
 import { Button } from "@mui/material";
+import type { IMainState, TMainDispatch } from "@/app/store";
 
 const WAREHOUSES = [
   { id: "", name: "Выберите склад" },
@@ -25,33 +31,69 @@ const MARKS = [
 ];
 
 const RISK_LEVELS = [
-  { id: "", name: "Выберите уровень риска" },
-  { id: "1", name: "Уровень 1" },
-  { id: "2", name: "Уровень 2" },
-  { id: "3", name: "Уровень 3" },
-];
+  {
+    id: "0",
+    value: ESealingLevel.LOW,
+    label: SEALING_LVL_SETTING.LOW.label
+  },
+  {
+    id: "1",
+    value: ESealingLevel.MEDIUM,
+    label: SEALING_LVL_SETTING.MEDIUM.label
+  },
+  {
+    id: "2",
+    value: ESealingLevel.HIGH,
+    label: SEALING_LVL_SETTING.HIGH.label
+  },
+  {
+    id: "3",
+    value: ESealingLevel.CRITICAL,
+    label: SEALING_LVL_SETTING.CRITICAL.label
+  }
+]
 
 function Params(): JSX.Element {
-  const [warehouse, setWarehouse] = useState<string>("");
-  const [coalMark, setCoalMark] = useState<string>("");
-  const [riskLevel, setRiskLevel] = useState<string>("");
-  
-  // Диапазон дат
-  const [dateFrom, setDateFrom] = useState<Date | null>(null);
-  const [dateTo, setDateTo] = useState<Date | null>(null);
-  
-  // Управление календарём
+  const historyParams = useSelector((state: IMainState) => state.history.params)
+
+  const dispatch = useDispatch<TMainDispatch>();
+
+  const [load, setLoad] = useState<boolean>(false)
   const [openCalendarFor, setOpenCalendarFor] = useState<"from" | "to" | null>(null);
+
+  const handleSelectAreaName = (e: ChangeEvent<HTMLSelectElement>): void => {
+    dispatch(setHistParams({areaName: e.target.value}))
+  }
+
+  const handleSelectCoalBrand = (e: ChangeEvent<HTMLSelectElement>): void => {
+    dispatch(setHistParams({coalBrand: e.target.value}))
+  }
+
+  const handleSelectSealingLevel = (e: ChangeEvent<HTMLSelectElement>): void => {
+    dispatch(setHistParams({sealingLevel: e.target.value as ESealingLevel}))
+  }
 
   const handleDateSelect = (date: Date | null) => {
     if (openCalendarFor === "from") {
-      setDateFrom(date);
+      dispatch(setHistParams({startDate: date}));
     } else if (openCalendarFor === "to") {
-      setDateTo(date);
+      dispatch(setHistParams({finishDate: date}));
     }
-    // Закрываем календарь после выбора
+
     setOpenCalendarFor(null);
   };
+
+  const handleSearchHistory = async (): Promise<void> => {
+    setLoad(true)
+
+    const response = await dispatch(getHistory()).unwrap()
+
+    if(!response || response === 'error') {
+      
+    }
+
+    setLoad(false)
+  }
 
   return (
     <section style={{ width: "100%" }}>
@@ -62,8 +104,8 @@ function Params(): JSX.Element {
               <h4>Склад площадка</h4>
               <select
                 className={styles["select-params"]}
-                value={warehouse}
-                onChange={(e) => setWarehouse(e.target.value)}
+                value={historyParams?.areaName}
+                onChange={handleSelectAreaName}
               >
                 <option value="" disabled hidden>
                   Любой склад
@@ -80,8 +122,8 @@ function Params(): JSX.Element {
               <h4>Марка угля</h4>
               <select
                 className={styles["select-params"]}
-                value={coalMark}
-                onChange={(e) => setCoalMark(e.target.value)}
+                value={historyParams?.coalBrand}
+                onChange={handleSelectCoalBrand}
               >
                 <option value="" disabled hidden>
                   Любая марка
@@ -98,15 +140,15 @@ function Params(): JSX.Element {
               <h4>Уровень риска</h4>
               <select
                 className={styles["select-params"]}
-                value={riskLevel}
-                onChange={(e) => setRiskLevel(e.target.value)}
+                value={historyParams?.sealingLevel || ""}
+                onChange={handleSelectSealingLevel}
               >
                 <option value="" disabled hidden>
                   Выберите уровень риска
                 </option>
-                {RISK_LEVELS.filter((r) => r.id).map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.name}
+                {RISK_LEVELS.map((r) => (
+                  <option key={r.id} value={r.value}>
+                    {r.label}
                   </option>
                 ))}
               </select>
@@ -121,7 +163,10 @@ function Params(): JSX.Element {
                 onClick={() => setOpenCalendarFor("from")}
                 sx={{ width: "100%" }}
               >
-                {dateFrom ? dateFrom.toLocaleDateString("ru-RU") : "Выберите дату"}
+                { historyParams?.startDate
+                  ? new Date(historyParams.startDate).toLocaleDateString("ru-RU")
+                  : "Выберите дату"
+                }
               </Button>
             </div>
 
@@ -133,7 +178,10 @@ function Params(): JSX.Element {
                 onClick={() => setOpenCalendarFor("to")}
                 sx={{ width: "100%" }}
               >
-                {dateTo ? dateTo.toLocaleDateString("ru-RU") : "Выберите дату"}
+                { historyParams?.finishDate
+                  ? new Date(historyParams.finishDate).toLocaleDateString("ru-RU")
+                  : "Выберите дату"
+                }
               </Button>
             </div>
 
@@ -142,7 +190,7 @@ function Params(): JSX.Element {
               <div style={{ gridColumn: "1 / -1", marginTop: "16px" }}>
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
                   <DateCalendar
-                    value={openCalendarFor === "from" ? dateFrom : dateTo}
+                    value={openCalendarFor === "from" ? historyParams?.startDate : historyParams?.finishDate}
                     onChange={handleDateSelect}
                     sx={{
                       width: "100%",
@@ -162,10 +210,13 @@ function Params(): JSX.Element {
             {/* Кнопка поиска */}
             <div style={{ gridColumn: "1 / -1", marginTop: "20px" }}>
               <Button
-                className="white"
+                className="green square"
+                loadingPosition="start"
+                loading={ load }
                 startIcon={<img src={SvgSearch} />}
                 variant="contained"
                 sx={{ width: "100%" }}
+                onClick={handleSearchHistory}
               >
                 Начать поиск
               </Button>

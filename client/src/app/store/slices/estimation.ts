@@ -4,6 +4,7 @@ import type {
     IEStateGeometry,
     IEStateOperations,
     IEStateCurrent,
+    IEStateResult,
 } from './types'
 
 import {
@@ -13,6 +14,7 @@ import {
 } from '@reduxjs/toolkit'
 
 import axios from 'axios'
+import type { IMainState } from '../types'
 
 
 const estimationSliceName = 'estimation'
@@ -64,25 +66,26 @@ const initialState: IEstimationState = {
     result: null,
 }
 
-export const sendEstimationData = createAsyncThunk<
-    any,
-    void,
-    { rejectValue: string }
->(
+export const sendEstimationData = createAsyncThunk(
     `${estimationSliceName}/send-estimation-data`,
-    async (_, { rejectWithValue }): Promise<any> => {
+    async (_, { getState }): Promise<'error' | null | IEStateResult> => {
         try {
-            const response = await axios.post('/api/preview', { /* данные */ });
+            const rootState = getState() as IMainState
+            const estimState = rootState.estimation
 
-            // если сервер вернул ошибку 4xx/5xx
-            if (response.status !== 200) {
-                return rejectWithValue('Ошибка сервера');
+            const data = {}
+
+            const url = "https://vmestedate.ru/"
+
+            const response = await axios.post(url, data);
+
+            if (![200, 201].includes(response.status)) {
+                return null
             }
 
             return response.data;
         } catch (err: any) {
-            // ловим сетевые или другие ошибки
-            return rejectWithValue(err.message || 'Неизвестная ошибка');
+            return 'error'
         }
     }
 )
@@ -184,11 +187,16 @@ const estimationSlice = createSlice({
             .addCase(sendEstimationData.pending, _ => {
                 console.log("Передача estimation на api")
             })
-            .addCase(sendEstimationData.fulfilled, (state, action: PayloadAction<any>) => {
-                console.log("Успешная передача estimation на api")
+            .addCase(sendEstimationData.fulfilled, (state, action: PayloadAction<'error' | null | IEStateResult>) => {
+                if(action.payload && action.payload !== 'error') {
+                    state.result = action.payload
+                    console.log("Успешная передача estimation на api")
+                } else {
+                    console.log("Ошибка отправки estimation на api")
+                }
             })
-            .addCase(sendEstimationData.rejected, (state, action: PayloadAction<any>) => {
-                console.log("Ошибка отправки estimation на api: ", action.payload || "Неизвестно")
+            .addCase(sendEstimationData.rejected, _ => {
+                console.log("Ошибка отправки estimation на api")
             })
     },
 })

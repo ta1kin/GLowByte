@@ -8,6 +8,7 @@ import styles from "./Params.module.scss";
 
 import Button from "@mui/material/Button";
 import UploadSvg from "@/shared/assets/icons/upload.svg";
+import axios from 'axios'
 
 const FILE_LABELS = [
   { key: "fires", label: "Fires.csv" },
@@ -23,6 +24,7 @@ export function Params(): JSX.Element {
   const [selectedFiles, setSelectedFiles] = useState<Record<string, string>>(
     {}
   );
+  const [load, setLoad] = useState<boolean>(false)
 
   const isValidCSV = (name: string) => name.toLowerCase().endsWith(".csv");
 
@@ -41,12 +43,33 @@ export function Params(): JSX.Element {
       return;
     }
     else {
-      enqueueSnackbar("Файл успешно загружен", {
-        variant: "success",
+      enqueueSnackbar("Начинается отправка файла, подождите немного", {
+        variant: "info",
       });
+
+      uploadFile(file)
     }
 
     setSelectedFiles((prev) => ({ ...prev, [key]: file.name }));
+  };
+
+  const uploadFile = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const url = 'https://vmestedate.ru/data/upload'
+
+    try {
+      setLoad(true)
+
+      await axios.post(url, formData, );
+
+      enqueueSnackbar("Файл отправлен", { variant: "success" });
+    } catch {
+      enqueueSnackbar("Ошибка отправки", { variant: "error" });
+    } finally {
+      setLoad(false)
+    }
   };
 
   return (
@@ -63,6 +86,9 @@ export function Params(): JSX.Element {
                 <h4>{label}</h4>
                 <Button
                   variant="contained"
+                  loadingPosition="start"
+                  loading={load}
+                  disabled={load}
                   onClick={() => fileRefs.current[key]?.click()}
                   className="white square"
                   startIcon={<img src={UploadSvg} />}

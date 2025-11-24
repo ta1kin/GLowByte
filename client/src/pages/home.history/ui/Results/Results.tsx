@@ -1,5 +1,7 @@
 import { UIBlock } from "@/shared/ui/Block";
+import { useSelector } from "react-redux";
 import type { JSX } from "react";
+import type { IMainState } from "@/app/store";
 
 import SvgSearch from "@/shared/assets/icons/search.svg";
 import styles from "./Results.module.scss";
@@ -68,6 +70,8 @@ const getRiskColor = (risk: string): string => {
 };
 
 function Results(): JSX.Element {
+  const histResult = useSelector((state: IMainState) => state.history.result)
+
   return (
     <section style={{ width: "100%" }}>
       <UIBlock
