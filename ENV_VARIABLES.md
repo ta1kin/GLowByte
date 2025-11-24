@@ -5,6 +5,7 @@
 ## Структура .env файлов
 
 Проект использует несколько `.env` файлов:
+
 - `.env` (корневой) - для Docker Compose
 - `api/.env` - для API сервиса
 - `bot/.env` - для Telegram бота
@@ -36,16 +37,16 @@ CLIENT_URL=https://vmestedate.ru
 
 ### Описание переменных
 
-| Переменная | Описание | Обязательно | Значение по умолчанию |
-|------------|----------|-------------|----------------------|
-| `DOCKER_USER` | Имя пользователя DockerHub для образов | Да | - |
-| `POSTGRES_USER` | Пользователь PostgreSQL | Нет | `postgres` |
-| `POSTGRES_PASSWORD` | Пароль PostgreSQL | Да | - |
-| `POSTGRES_DB` | Имя базы данных | Нет | `coalfire` |
-| `RABBITMQ_USER` | Пользователь RabbitMQ | Нет | `guest` |
-| `RABBITMQ_PASSWORD` | Пароль RabbitMQ | Да | - |
-| `TELEGRAM_BOT_TOKEN` | Токен Telegram бота | Да (если используется бот) | - |
-| `CLIENT_URL` | URL фронтенда | Нет | `https://vmestedate.ru` |
+| Переменная           | Описание                               | Обязательно                | Значение по умолчанию   |
+| -------------------- | -------------------------------------- | -------------------------- | ----------------------- |
+| `DOCKER_USER`        | Имя пользователя DockerHub для образов | Да                         | -                       |
+| `POSTGRES_USER`      | Пользователь PostgreSQL                | Нет                        | `postgres`              |
+| `POSTGRES_PASSWORD`  | Пароль PostgreSQL                      | Да                         | -                       |
+| `POSTGRES_DB`        | Имя базы данных                        | Нет                        | `coalfire`              |
+| `RABBITMQ_USER`      | Пользователь RabbitMQ                  | Нет                        | `guest`                 |
+| `RABBITMQ_PASSWORD`  | Пароль RabbitMQ                        | Да                         | -                       |
+| `TELEGRAM_BOT_TOKEN` | Токен Telegram бота                    | Да (если используется бот) | -                       |
+| `CLIENT_URL`         | URL фронтенда                          | Нет                        | `https://vmestedate.ru` |
 
 ## api/.env
 
@@ -71,8 +72,8 @@ ML_SERVICE_RETRY_DELAY=1000
 PORT=3000
 NODE_ENV=production
 
-# CORS
-CORS_ORIGIN=https://vmestedate.ru
+# CORS (можно указать несколько доменов через запятую)
+CORS_ORIGIN=https://vmeste-date.ru,https://vmestedate.ru,http://localhost:5173
 
 # File Upload
 UPLOADS_DIR=./uploads
@@ -80,19 +81,19 @@ UPLOADS_DIR=./uploads
 
 ### Описание переменных
 
-| Переменная | Описание | Обязательно | Значение по умолчанию |
-|------------|----------|-------------|----------------------|
-| `DATABASE_URL` | URL подключения к PostgreSQL | Да | - |
-| `REDIS_HOST` | Хост Redis | Нет | `redis` |
-| `REDIS_PORT` | Порт Redis | Нет | `6379` |
-| `RABBITMQ_URL` | URL подключения к RabbitMQ | Да | - |
-| `ML_SERVICE_URL` | URL ML сервиса | Да | `http://ml-service:8000` |
-| `ML_SERVICE_MAX_RETRIES` | Максимум повторных попыток | Нет | `3` |
-| `ML_SERVICE_RETRY_DELAY` | Задержка между попытками (мс) | Нет | `1000` |
-| `PORT` | Порт API сервера | Нет | `3000` |
-| `NODE_ENV` | Окружение | Нет | `production` |
-| `CORS_ORIGIN` | Разрешенный источник для CORS | Нет | `http://localhost:5173` |
-| `UPLOADS_DIR` | Директория для загрузок | Нет | `./uploads` |
+| Переменная               | Описание                      | Обязательно | Значение по умолчанию    |
+| ------------------------ | ----------------------------- | ----------- | ------------------------ |
+| `DATABASE_URL`           | URL подключения к PostgreSQL  | Да          | -                        |
+| `REDIS_HOST`             | Хост Redis                    | Нет         | `redis`                  |
+| `REDIS_PORT`             | Порт Redis                    | Нет         | `6379`                   |
+| `RABBITMQ_URL`           | URL подключения к RabbitMQ    | Да          | -                        |
+| `ML_SERVICE_URL`         | URL ML сервиса                | Да          | `http://ml-service:8000` |
+| `ML_SERVICE_MAX_RETRIES` | Максимум повторных попыток    | Нет         | `3`                      |
+| `ML_SERVICE_RETRY_DELAY` | Задержка между попытками (мс) | Нет         | `1000`                   |
+| `PORT`                   | Порт API сервера              | Нет         | `3000`                   |
+| `NODE_ENV`               | Окружение                     | Нет         | `production`             |
+| `CORS_ORIGIN`            | Разрешенный источник для CORS | Нет         | `http://localhost:5173`  |
+| `UPLOADS_DIR`            | Директория для загрузок       | Нет         | `./uploads`              |
 
 ## bot/.env
 
@@ -114,12 +115,12 @@ PORT=9000
 
 ### Описание переменных
 
-| Переменная | Описание | Обязательно | Значение по умолчанию |
-|------------|----------|-------------|----------------------|
-| `TELEGRAM_BOT_TOKEN` | Токен Telegram бота | Да | - |
-| `API_URL` | URL API сервиса | Да | `http://api:3000` |
-| `CLIENT_URL` | URL фронтенда | Нет | `https://vmestedate.ru` |
-| `PORT` | Порт бота | Нет | `9000` |
+| Переменная           | Описание            | Обязательно | Значение по умолчанию   |
+| -------------------- | ------------------- | ----------- | ----------------------- |
+| `TELEGRAM_BOT_TOKEN` | Токен Telegram бота | Да          | -                       |
+| `API_URL`            | URL API сервиса     | Да          | `http://api:3000`       |
+| `CLIENT_URL`         | URL фронтенда       | Нет         | `https://vmestedate.ru` |
+| `PORT`               | Порт бота           | Нет         | `9000`                  |
 
 ## ml-service/.env
 
@@ -142,13 +143,13 @@ ENVIRONMENT=production
 
 ### Описание переменных
 
-| Переменная | Описание | Обязательно | Значение по умолчанию |
-|------------|----------|-------------|----------------------|
-| `DATABASE_URL` | URL подключения к PostgreSQL | Да | - |
-| `MODEL_PATH` | Путь к директории с моделями | Нет | `./models` |
-| `MODEL_VERSION` | Версия модели по умолчанию | Нет | `1.0.0` |
-| `API_URL` | URL API сервиса | Нет | `http://localhost:3000` |
-| `ENVIRONMENT` | Окружение | Нет | `development` |
+| Переменная      | Описание                     | Обязательно | Значение по умолчанию   |
+| --------------- | ---------------------------- | ----------- | ----------------------- |
+| `DATABASE_URL`  | URL подключения к PostgreSQL | Да          | -                       |
+| `MODEL_PATH`    | Путь к директории с моделями | Нет         | `./models`              |
+| `MODEL_VERSION` | Версия модели по умолчанию   | Нет         | `1.0.0`                 |
+| `API_URL`       | URL API сервиса              | Нет         | `http://localhost:3000` |
+| `ENVIRONMENT`   | Окружение                    | Нет         | `development`           |
 
 ## client/.env
 
@@ -167,13 +168,13 @@ VITE_API_URL=https://vmestedate.ru/api
 
 ### Описание переменных
 
-| Переменная | Описание | Обязательно | Значение по умолчанию |
-|------------|----------|-------------|----------------------|
-| `VITE_HOST` | Хост для Vite сервера | Да | `0.0.0.0` |
-| `VITE_MODE` | Режим работы (dev, test, prod) | Да | `prod` |
-| `VITE_DOMAIN` | Домен приложения | Да | `vmestedate.ru` |
-| `VITE_PORT` | Порт для Vite сервера | Да | `5174` |
-| `VITE_API_URL` | URL API сервиса | Да | `https://vmestedate.ru/api` |
+| Переменная     | Описание                       | Обязательно | Значение по умолчанию       |
+| -------------- | ------------------------------ | ----------- | --------------------------- |
+| `VITE_HOST`    | Хост для Vite сервера          | Да          | `0.0.0.0`                   |
+| `VITE_MODE`    | Режим работы (dev, test, prod) | Да          | `prod`                      |
+| `VITE_DOMAIN`  | Домен приложения               | Да          | `vmestedate.ru`             |
+| `VITE_PORT`    | Порт для Vite сервера          | Да          | `5174`                      |
+| `VITE_API_URL` | URL API сервиса                | Да          | `https://vmestedate.ru/api` |
 
 ## Быстрая настройка
 
@@ -199,23 +200,28 @@ cp client/.env.example client/.env
 ### 2. Заполните обязательные переменные
 
 **В корневом `.env`:**
+
 - `DOCKER_USER` - ваш DockerHub username
 - `POSTGRES_PASSWORD` - надежный пароль для PostgreSQL
 - `RABBITMQ_PASSWORD` - надежный пароль для RabbitMQ
 - `TELEGRAM_BOT_TOKEN` - токен бота (если используется)
 
 **В `api/.env`:**
+
 - `DATABASE_URL` - должен соответствовать настройкам из корневого `.env`
 - `RABBITMQ_URL` - должен соответствовать настройкам из корневого `.env`
 
 **В `bot/.env`:**
+
 - `TELEGRAM_BOT_TOKEN` - тот же токен, что и в корневом `.env`
 - `API_URL` - URL API сервиса
 
 **В `ml-service/.env`:**
+
 - `DATABASE_URL` - должен соответствовать настройкам из корневого `.env`
 
 **В `client/.env`:**
+
 - `VITE_API_URL` - URL API сервиса (для production: `https://vmestedate.ru/api`)
 - `VITE_DOMAIN` - домен приложения (для production: `vmestedate.ru`)
 - `VITE_MODE` - режим работы (`prod` для production)
@@ -223,6 +229,7 @@ cp client/.env.example client/.env
 ### 3. Для локальной разработки
 
 Если вы запускаете сервисы локально (не через Docker), измените:
+
 - `DATABASE_URL`: `postgresql://postgres:postgres@localhost:5432/coalfire`
 - `RABBITMQ_URL`: `amqp://guest:guest@localhost:5672`
 - `ML_SERVICE_URL`: `http://localhost:8000`
@@ -232,6 +239,7 @@ cp client/.env.example client/.env
 ## Безопасность
 
 ⚠️ **ВАЖНО:**
+
 - Никогда не коммитьте `.env` файлы в git
 - Используйте сильные пароли для production
 - Регулярно обновляйте пароли
@@ -257,4 +265,3 @@ cat ml-service/.env
 # Проверка Client .env
 cat client/.env
 ```
-

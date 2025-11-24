@@ -54,6 +54,17 @@ class PredictionRequest(BaseModel):
     horizon_days: Optional[int] = 7
 
 
+class DirectPredictionRequest(BaseModel):
+    """Запрос на прогнозирование с прямыми параметрами из формы клиента"""
+    max_temp: float  # Максимальная температура штабеля
+    age_days: float  # Возраст штабеля в днях
+    temp_air: Optional[float] = 20.0  # Температура воздуха
+    humidity: Optional[float] = 60.0  # Влажность
+    precip: Optional[float] = 0.0  # Осадки
+    temp_delta_3d: Optional[float] = 0.0  # Изменение температуры за 3 дня
+    horizon_days: Optional[int] = 7
+
+
 class BatchPredictionRequest(BaseModel):
     shtabel_ids: List[int]
     horizon_days: Optional[int] = 7
@@ -196,6 +207,116 @@ async def predict(request: PredictionRequest):
         raise
     except Exception as e:
         logger.error(f"Prediction error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/predict/direct", response_model=PredictionResponse)
+async def predict_direct(request: DirectPredictionRequest):
+    """
+    Прямое прогнозирование на основе параметров из формы клиента
+    
+    Принимает параметры напрямую без необходимости наличия штабеля в БД.
+    Используется для расчета риска из формы на клиенте.
+    
+    Args:
+        request: Параметры для прогнозирования:
+            - max_temp: Максимальная температура штабеля (°C)
+            - age_days: Возраст штабеля в днях
+            - temp_air: Температура воздуха (°C, опционально, по умолчанию 20.0)
+            - humidity: Влажность (%, опционально, по умолчанию 60.0)
+            - precip: Осадки (мм, опционально, по умолчанию 0.0)
+            - temp_delta_3d: Изменение температуры за 3 дня (°C, опционально, по умолчанию 0.0)
+            - horizon_days: Горизонт прогнозирования (дни, опционально, по умолчанию 7)
+        
+    Returns:
+        Результат прогнозирования с уровнем риска
+    """
+    try:
+        logger.info(f"Direct prediction request: max_temp={request.max_temp}, age_days={request.age_days}")
+        
+        # Проверяем, загружена ли модель
+        if not model_manager.is_model_loaded():
+            logger.warning("Model not loaded, attempting to load default model...")
+            if not model_manager.load_model("coal_fire_model", "1.0.0"):
+                raise HTTPException(
+                    status_code=503,
+                    detail="Model not available. Please train a model first."
+                )
+        
+        model = model_manager.get_model()
+        if not model:
+            raise HTTPException(
+                status_code=503,
+                detail="Model not available"
+            )
+        
+        # Подготавливаем признаки напрямую из параметров запроса
+        import pandas as pd
+        features_df = pd.DataFrame([{
+            'Максимальная температура': request.max_temp,
+            'age_days': request.age_days,
+            'temp_air': request.temp_air or 20.0,
+            'humidity': request.humidity or 60.0,
+            'precip': request.precip or 0.0,
+            'temp_delta_3d': request.temp_delta_3d or 0.0
+        }])
+        
+        # Делаем предсказание
+        proba = model.predict_proba(features_df)[0][1]
+        pred = int(proba >= 0.5)
+        
+        # Определяем уровень риска
+        if proba >= 0.8:
+            risk_level = "CRITICAL"
+        elif proba >= 0.6:
+            risk_level = "HIGH"
+        elif proba >= 0.4:
+            risk_level = "MEDIUM"
+        else:
+            risk_level = "LOW"
+        
+        # Рассчитываем предсказанную дату
+        target_date = datetime.now()
+        if pred == 1:
+            days_to_fire = max(1, int((request.horizon_days or 7) * (1 - proba)))
+            predicted_date = target_date + timedelta(days=days_to_fire)
+        else:
+            predicted_date = None
+        
+        # Интервал уверенности
+        if predicted_date:
+            interval_low = predicted_date - timedelta(days=2)
+            interval_high = predicted_date + timedelta(days=2)
+        else:
+            interval_low = None
+            interval_high = None
+        
+        result = {
+            "shtabel_id": 0,  # Нет штабеля в БД
+            "model_name": "xgboost_v1",
+            "model_version": model_manager.get_model_info().get("model_version", "1.0.0") if model_manager.get_model_info() else "1.0.0",
+            "predicted_date": predicted_date.isoformat() if predicted_date else None,
+            "prob_event": float(proba),
+            "risk_level": risk_level,
+            "horizon_days": request.horizon_days or 7,
+            "interval_low": interval_low.isoformat() if interval_low else None,
+            "interval_high": interval_high.isoformat() if interval_high else None,
+            "confidence": float(proba),
+            "meta": {
+                "predicted": pred,
+                "features": features_df.iloc[0].to_dict(),
+                "target_date": target_date.isoformat(),
+            },
+        }
+        
+        logger.info(f"Direct prediction completed: risk={risk_level}, prob={proba:.2f}")
+        
+        return PredictionResponse(**result)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Direct prediction error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -15,7 +15,7 @@ import {
 	ApiBearerAuth,
 } from '@nestjs/swagger'
 import { PredictionService } from './prediction.service'
-import { CreatePredictionDto } from './dto'
+import { CreatePredictionDto, DirectPredictionDto } from './dto'
 
 @ApiTags('Predictions')
 @Controller('predictions')
@@ -61,5 +61,23 @@ export class PredictionController {
 	@ApiBearerAuth()
 	async batchPredict() {
 		return this.predictionService.batchPredict()
+	}
+
+	@Post('calculate')
+	@ApiOperation({ 
+		summary: 'Calculate fire risk prediction synchronously (for client)',
+		description: 'Синхронный расчет риска самовозгорания для штабеля. Возвращает результат сразу без сохранения в БД. Используется для клиентского приложения.'
+	})
+	async calculatePrediction(@Body() dto: CreatePredictionDto) {
+		return this.predictionService.calculatePredictionSync(dto.shtabelId, dto.horizonDays)
+	}
+
+	@Post('calculate/direct')
+	@ApiOperation({ 
+		summary: 'Calculate fire risk from form parameters (for client form)',
+		description: 'Расчет риска самовозгорания на основе параметров из формы клиента. Принимает параметры напрямую без необходимости наличия штабеля в БД. Используется для формы расчета риска на клиенте.'
+	})
+	async calculateDirectPrediction(@Body() dto: DirectPredictionDto) {
+		return this.predictionService.calculateDirectPrediction(dto)
 	}
 }

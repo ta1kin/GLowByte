@@ -57,10 +57,101 @@ curl -X POST "https://vmeste-date.ru/api/data/upload" \
 
 ---
 
-### Сценарий 2: Создание прогноза для штабеля
+### Сценарий 2: Расчет риска из формы клиента ⭐
 
-**Цель**: Получить прогноз риска самовозгорания для конкретного штабеля
+**Цель**: Получить прогноз риска самовозгорания на основе параметров из формы
 
+#### Эндпоинт для формы клиента
+
+```bash
+curl -X POST "https://vmeste-date.ru/api/predictions/calculate/direct" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "max_temp": 45.5,
+    "age_days": 30,
+    "temp_air": 20.0,
+    "humidity": 60.0,
+    "precip": 0.0,
+    "temp_delta_3d": 2.5,
+    "horizonDays": 7
+  }'
+```
+
+**Параметры запроса**:
+
+- `max_temp` (обязательный) - Максимальная температура штабеля (°C)
+- `age_days` (обязательный) - Возраст штабеля в днях
+- `temp_air` (опционально, по умолчанию 20.0) - Температура воздуха (°C)
+- `humidity` (опционально, по умолчанию 60.0) - Влажность (%)
+- `precip` (опционально, по умолчанию 0.0) - Осадки (мм)
+- `temp_delta_3d` (опционально, по умолчанию 0.0) - Изменение температуры за 3 дня (°C)
+- `horizonDays` (опционально, по умолчанию 7) - Горизонт прогнозирования (дни)
+
+**Ответ**:
+
+```json
+{
+	"success": true,
+	"message": "Прогноз рассчитан",
+	"data": {
+		"riskLevel": "HIGH",
+		"probEvent": 0.75,
+		"predictedDate": "2025-01-27T00:00:00Z",
+		"intervalLow": "2025-01-25T00:00:00Z",
+		"intervalHigh": "2025-01-29T00:00:00Z",
+		"confidence": 0.75,
+		"horizonDays": 7,
+		"modelName": "xgboost_v1",
+		"modelVersion": "1.0.0"
+	}
+}
+```
+
+**Пример использования в JavaScript**:
+
+```javascript
+const response = await fetch(
+	'https://vmeste-date.ru/api/predictions/calculate/direct',
+	{
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			max_temp: 45.5,
+			age_days: 30,
+			temp_air: 20.0,
+			humidity: 60.0,
+			precip: 0.0,
+			temp_delta_3d: 2.5,
+			horizonDays: 7,
+		}),
+	}
+)
+
+const result = await response.json()
+console.log('Уровень риска:', result.data.riskLevel)
+console.log('Вероятность:', result.data.probEvent)
+```
+
+---
+
+### Сценарий 3: Создание прогноза для штабеля из БД
+
+**Цель**: Получить прогноз для штабеля, который уже есть в базе данных
+
+#### Вариант A: Синхронный расчет
+
+```bash
+curl -X POST "https://vmeste-date.ru/api/predictions/calculate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shtabelId": 1,
+    "horizonDays": 7
+  }'
+```
+
+#### Вариант B: Асинхронный расчет (через очередь)
 
 ```bash
 curl -X POST "https://vmeste-date.ru/api/predictions" \
@@ -71,9 +162,11 @@ curl -X POST "https://vmeste-date.ru/api/predictions" \
   }'
 ```
 
+**Примечание**: Асинхронный эндпоинт ставит задачу в очередь. Для получения результата используйте `GET /api/predictions?shtabelId=1`
+
 ---
 
-### Сценарий 3: Массовое прогнозирование
+### Сценарий 4: Массовое прогнозирование
 
 **Цель**: Рассчитать прогнозы для всех активных штабелей
 
@@ -85,7 +178,7 @@ curl -X POST "https://vmeste-date.ru/api/predictions/batch/calculate"
 
 ---
 
-### Сценарий 4: Прогнозирование на основе CSV файлов
+### Сценарий 5: Прогнозирование на основе CSV файлов
 
 **Цель**: Получить прогнозы напрямую из CSV файлов без загрузки в БД
 
@@ -130,7 +223,7 @@ print(response.json())
 
 ---
 
-### Сценарий 5: Валидация модели на тестовых данных
+### Сценарий 6: Валидация модели на тестовых данных
 
 **Цель**: Проверить точность модели на тестовом датасете
 
@@ -155,7 +248,7 @@ curl -X POST "http://62.181.44.52:8000/validate?model_name=coal_fire_model&model
 
 ---
 
-### Сценарий 6: Обучение модели
+### Сценарий 7: Обучение модели
 
 **Цель**: Обучить новую версию модели на актуальных данных
 
@@ -177,7 +270,7 @@ curl -X POST "https://vmeste-date.ru/api/ml/train" \
 
 ---
 
-### Сценарий 7: Просмотр метрик и аналитики
+### Сценарий 8: Просмотр метрик и аналитики
 
 **Цель**: Оценить качество модели и получить статистику
 
@@ -205,7 +298,7 @@ curl "https://vmeste-date.ru/api/analytics/risk-distribution"
 
 ---
 
-### Сценарий 8: Работа через Telegram бот
+### Сценарий 9: Работа через Telegram бот
 
 1. Откройте Telegram и найдите бота: [@Ta1_devBot](https://t.me/Ta1_devBot)
 2. Отправьте команду `/start`
@@ -355,6 +448,7 @@ ML_SERVICE_URL=http://ml-service:8000
 PORT=3000
 JWT_SECRET=STRONG_SECRET_KEY
 CLIENT_URL=https://vmeste-date.ru
+CORS_ORIGIN=https://vmeste-date.ru,https://vmestedate.ru,http://localhost:5173
 NODE_ENV=production
 ```
 
@@ -516,7 +610,9 @@ sudo ufw enable
 
 #### Прогнозирование
 
-- `POST /api/predictions` - Создание прогноза
+- `POST /api/predictions/calculate/direct` - **Расчет риска из формы клиента** ⭐⭐
+- `POST /api/predictions/calculate` - Синхронный расчет риска для штабеля из БД
+- `POST /api/predictions` - Создание прогноза (асинхронно, через очередь)
 - `GET /api/predictions` - Список прогнозов
 - `POST /api/predictions/batch/calculate` - Массовое прогнозирование
 

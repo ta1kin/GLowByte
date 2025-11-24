@@ -118,6 +118,24 @@ export class MlService {
     );
   }
 
+  async predictDirect(params: {
+    max_temp: number;
+    age_days: number;
+    temp_air?: number;
+    humidity?: number;
+    precip?: number;
+    temp_delta_3d?: number;
+    horizon_days?: number;
+  }) {
+    return this.retryWithBackoff(
+      async () => {
+        const response = await this.client.post('/predict/direct', params);
+        return response.data;
+      },
+      'predictDirect'
+    );
+  }
+
   async getMetrics() {
     return this.retryWithBackoff(
       async () => {
