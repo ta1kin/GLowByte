@@ -4,9 +4,9 @@ import { errorRoute } from '@/shared/config';
 import { useSnackbar } from 'notistack';
 import { sendEstimationData } from '@/app/store/slices';
 import { resetEstimation } from '@/app/store/slices';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { type JSX, useState } from 'react'
-import type { TMainDispatch } from '@/app/store';
+import type { TMainDispatch, IMainState } from '@/app/store';
 
 import SvgArrowPulse from '@/shared/assets/icons/arrow-pulse.svg';
 import styles from './Btns.module.scss'
@@ -17,13 +17,26 @@ function Btns(): JSX.Element {
     const dispatch = useDispatch<TMainDispatch>()
     const { enqueueSnackbar } = useSnackbar()
     const [load, setLoad] = useState<boolean>(false)
+    const ectimData  = useSelector((state: IMainState) => state.estimation)
+
+    
 
     async function handleGetPredict(): Promise<void> {
+        if (
+            !ectimData.current ||
+            !ectimData.params ||
+            !ectimData.geometry 
+        ) {
+            enqueueSnackbar('Заполните все поля', { variant: 'warning' })
+            return
+        }
         setLoad(true)
         
         const response = await dispatch(sendEstimationData()).unwrap()
 
-        enqueueSnackbar('Тут сообщение результата', { variant: 'success' })
+        console.log("вот респонс", response)
+
+        enqueueSnackbar('Сообщение отправлено', { variant: 'success' })
         setLoad(false)
 
         // Тут если критическая ошибка, по типу 404 или 500, то нахуй с пляжа

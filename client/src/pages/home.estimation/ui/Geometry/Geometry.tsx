@@ -32,9 +32,9 @@ const LEVEL = [
 ];
 
 const COVERING = [
-  { id: "1", name: "Что-то" },
-  { id: "2", name: "Что-то" },
-  { id: "3", name: "Что-то" },
+  { id: "1", name: "Траншея" },
+  { id: "2", name: "Покрытия" },
+  { id: "3", name: "Гидроизолирующие покрытия" },
 ];
 
 function Geometry(): JSX.Element {
@@ -54,7 +54,7 @@ function Geometry(): JSX.Element {
         <div className={styles["block-body"]}>
           <div className={styles["block-body__ctx"]}>
             <div>
-              <h4>Тип хранения</h4>
+              <h4>Тип (Опционально)</h4>
               <select
                 className={styles["select-params"]}
                 value={geometryState.geometry?.type || ""}
@@ -103,7 +103,7 @@ function Geometry(): JSX.Element {
             </div>
 
             <div>
-              <h4>Форма штабеля</h4>
+              <h4>Форма(Опционально)</h4>
               <select
                 className={styles["select-params"]}
                 value={geometryState.geometry?.stackShape || ""}
@@ -122,7 +122,7 @@ function Geometry(): JSX.Element {
             </div>
 
             <div>
-              <h4>Уровень уплотнения</h4>
+              <h4>Уплотнение(Опционально)</h4>
               <select
                 className={styles["select-params"]}
                 value={geometryState.geometry?.sealingLevel || ""}
@@ -141,7 +141,7 @@ function Geometry(): JSX.Element {
             </div>
 
             <div className={styles["full-width"]}>
-              <h4>Расстояние до ближайшего штабеля, м</h4>
+              <h4>Расстояние до ближайшего штабеля(Опционально)</h4>
               <input
                 value={geometryState.geometry?.distance || ""}
                 onChange={(event: any) =>
@@ -154,7 +154,7 @@ function Geometry(): JSX.Element {
             </div>
             
             <div>
-              <h4>Укрытие / Защита</h4>
+              <h4>Укрытие(Опционально)</h4>
               <div className={styles["radio-group"]}>
                 {COVERING.map((option) => (
                   <div key={option.id} className={styles["radio-item"]}>

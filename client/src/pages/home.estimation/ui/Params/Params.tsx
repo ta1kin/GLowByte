@@ -20,6 +20,9 @@ const ASH = [
   { id: "1", name: "0.1" },
   { id: "2", name: "0.2" },
   { id: "3", name: "0.3" },
+  { id: "4", name: "0.4" },
+  { id: "5", name: "0.5" },
+ 
 ];
 
 function Params(): JSX.Element {
@@ -42,7 +45,7 @@ function Params(): JSX.Element {
         <div className={styles["block-body"]}>
           <div className={styles["block-body__ctx"]}>
             <div>
-              <h4>Марка / Тип угля</h4>
+              <h4>Марка (Опционально)</h4>
               <select
                 className={styles["select-params"]}
                 value={paramsState.params?.mark || ""}
@@ -63,7 +66,7 @@ function Params(): JSX.Element {
             </div>
 
             <div>
-              <h4>Зольность, %</h4>
+              <h4>Зольность,%(Опционально)</h4>
               <select
                 className={styles["select-params"]}
                 value={paramsState.params?.ash || ""}
@@ -95,7 +98,7 @@ function Params(): JSX.Element {
               />
             </div>
             <div>
-              <h4>Сера, %</h4>
+              <h4>Осадок, %</h4>
               <input
                 value={paramsState.params?.sulfur || ""}
                 onChange={(event: any) =>
@@ -108,7 +111,7 @@ function Params(): JSX.Element {
             </div>
 
             <div>
-              <h4>Размер частиц / фракция (мм)</h4>
+              <h4>Размер частиц (Опционально)</h4>
               <input
                 value={paramsState.params?.fraction || ""}
                 onChange={(event: any) =>
@@ -121,7 +124,7 @@ function Params(): JSX.Element {
             </div>
 
             <div>
-              <h4>Объем партии, т</h4>
+              <h4>Объем партии, (Опционально)</h4>
               <input
                 value={paramsState.params?.volume || ""}
                 onChange={(event: any) =>

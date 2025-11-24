@@ -63,11 +63,11 @@ export interface IEStateCurrent {
 }
 
 export interface IEStateResult {
-    sealingLevel: ESealingLevel
-    predProb: number
-    horizProb: string
-    critTime: string
-    recomendations: string[]
+  sealingLevel: ESealingLevel;  
+  predProb: number;              
+  horizonDays: number;          
+  critTime: string;              
+  recommendations: string[];     
 }
 
 export interface IEstimationState {

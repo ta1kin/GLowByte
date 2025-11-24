@@ -1,23 +1,12 @@
 import { UIBlock } from "@/shared/ui/Block";
 import type { JSX } from "react";
-import { useState } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
 import type { IMainState, TMainDispatch } from "@/app/store";
 import { setOperations } from "@/app/store/slices/estimation";
-
 import styles from "./Operations.module.scss";
 import SvgSettings from "@/shared/assets/icons/settings.svg";
 
-const FREQUENCY1 = [
-  { id: "", name: "Выберите частоту" },
-  { id: "1", name: "Частота 1" },
-  { id: "2", name: "Частота 2" },
-  { id: "3", name: "Частота 3" },
-];
-
-const FREQUENCY2 = [
-  { id: "", name: "Выберите частоту" },
+const FREQUENCY_OPTIONS = [
   { id: "1", name: "Частота 1" },
   { id: "2", name: "Частота 2" },
   { id: "3", name: "Частота 3" },
@@ -34,34 +23,31 @@ const PREVENTION_SYSTEMS = [
 ];
 
 const MODES = [
-  { id: "", name: "Выберите режим" },
   { id: "manual", name: "Ручной" },
   { id: "auto", name: "Автоматический" },
 ];
 
 function Operations(): JSX.Element {
-  const operationState = useSelector((state: IMainState) => state.estimation);
+  const operations = useSelector(
+    (state: IMainState) => state.estimation.operations
+  );
   const dispatch = useDispatch<TMainDispatch>();
-  
 
-  const [freq1, setFreq1] = useState<string>("");
-  const [freq2, setFreq2] = useState<string>("");
-  const [monitoring, setMonitoring] = useState<string[]>([]);
-  const [prevention, setPrevention] = useState<string[]>([]);
-  const [mode, setMode] = useState<string>("");
-  const [frequencyText, setFrequencyText] = useState<string>("");
-  const [incident, setIncident] = useState<string>("");
-
-  const handleMonitoringChange = (id: string) => {
-    setMonitoring((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+  const toggleSystem = (systemId: string) => {
+    const current = operations?.monitSys || [];
+    const updated = current.includes(systemId)
+      ? current.filter((id) => id !== systemId)
+      : [...current, systemId];
+    dispatch(setOperations({ monitSys: updated }));
   };
 
-  const handlePreventionChange = (id: string) => {
-    setPrevention((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+  const safeOps = operations || {
+    transFreq: "",
+    tempFreq: "",
+    monitSys: [],
+    frequency: "",
+    mode: "",
+    isIncident: false,
   };
 
   return (
@@ -73,151 +59,117 @@ function Operations(): JSX.Element {
       >
         <div className={styles["block-body"]}>
           <div className={styles["block-body__ctx"]}>
-            {/* Частота перевалки / переформирования */}
             <div>
-              <h4>Частота перевалки / переформирования</h4>
+              <h4>Частота перевалки(Опционально)</h4>
               <select
                 className={styles["select-params"]}
-                value={operationState.operations?.transFreq || ""}
-                onChange={(e:any) => dispatch(setOperations({ transFreq: e.target.value }))}
-                required
+                value={safeOps.transFreq}
+                onChange={(e) =>
+                  dispatch(setOperations({ transFreq: e.target.value }))
+                }
               >
-                <option value="" disabled hidden>
-                  Выберите частоту
-                </option>
-                {FREQUENCY1.filter((f) => f.id).map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {f.name}
+                <option value="">Выберите частоту</option>
+                {FREQUENCY_OPTIONS.map((opt) => (
+                  <option key={`trans-${opt.id}`} value={opt.id}>
+                    {opt.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Частота измерения температуры */}
             <div>
-              <h4>Частота измерения температуры</h4>
+              <h4>Частота измерения температуры(Опционально)</h4>
               <select
                 className={styles["select-params"]}
-                value={operationState.operations?.tempFreq}
-                onChange={(e: any) => dispatch(setOperations({ tempFreq: e.target.value }))}
-                required
+                value={safeOps.tempFreq}
+                onChange={(e) =>
+                  dispatch(setOperations({ tempFreq: e.target.value }))
+                }
               >
-                <option value="" disabled hidden>
-                  Выберите частоту
-                </option>
-                {FREQUENCY2.filter((f) => f.id).map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {f.name}
+                <option value="">Выберите частоту</option>
+                {FREQUENCY_OPTIONS.map((opt) => (
+                  <option key={`temp-${opt.id}`} value={opt.id}>
+                    {opt.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Системы мониторинга */}
             <div className={styles["full-width"]}>
-              <h4>Системы мониторинга</h4>
+              <h4>Системы мониторинга(Опционально)</h4>
               <div className={styles["checkbox-group"]}>
-                {MONITORING_SYSTEMS.map((system) => (
-                  <div key={system.id} className={styles["checkbox-item"]}>
+                {MONITORING_SYSTEMS.map((sys) => (
+                  <div key={`monitoring-${sys.id}`} className={styles["checkbox-item"]}>
                     <input
                       type="checkbox"
-                      id={`monitoring-${system.id}`}
-                      checked={operationState.operations?.monitSys?.includes(system.id)}
-                      onChange={() => dispatch(setOperations({ monitSys: monitoring }))}
+                      id={`sys-${sys.id}`}
+                      checked={safeOps.monitSys.includes(sys.id)}
+                      onChange={() => toggleSystem(sys.id)}
                       className={styles["checkbox"]}
                     />
                     <label
-                      htmlFor={`monitoring-${system.id}`}
+                      htmlFor={`sys-${sys.id}`}
                       className={styles["checkbox-label"]}
                     >
-                      {system.name}
+                      {sys.name}
                     </label>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Системы предотвращения */}
             <div className={styles["full-width"]}>
-              <h4>Системы предотвращения</h4>
+              <h4>Системы предотвращения(Опционально)</h4>
               <div className={styles["checkbox-group"]}>
-                {PREVENTION_SYSTEMS.map((system) => (
-                  <div key={system.id} className={styles["checkbox-item"]}>
+                {PREVENTION_SYSTEMS.map((sys) => (
+                  <div key={`prev-${sys.id}`} className={styles["checkbox-item"]}>
                     <input
                       type="checkbox"
-                      id={`prevention-${system.id}`}
-                      checked={operationState.operations?.monitSys?.includes(system.id)}
-                      onChange={() => dispatch(setOperations({ monitSys: prevention }))}
+                      id={`sys-${sys.id}`}
+                      checked={safeOps.monitSys.includes(sys.id)}
+                      onChange={() => toggleSystem(sys.id)}
                       className={styles["checkbox"]}
                     />
                     <label
-                      htmlFor={`prevention-${system.id}`}
+                      htmlFor={`sys-${sys.id}`}
                       className={styles["checkbox-label"]}
                     >
-                      {system.name}
+                      {sys.name}
                     </label>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Режим и частота */}
             <div>
-              <h4>Режим</h4>
+              <h4>Режим(Опционально)</h4>
               <select
                 className={styles["select-params"]}
-                value={operationState.operations?.mode || ""}
-                onChange={(e) => dispatch(setOperations({ mode: e.target.value }))} 
-                required
+                value={safeOps.mode}
+                onChange={(e) =>
+                  dispatch(setOperations({ mode: e.target.value }))
+                }
               >
-                <option value="" disabled hidden>
-                  Выберите режим
-                </option>
-                {MODES.filter((m) => m.id).map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
+                <option value="">Выберите режим</option>
+                {MODES.map((opt) => (
+                  <option key={`mode-${opt.id}`} value={opt.id}>
+                    {opt.name}
                   </option>
                 ))}
               </select>
             </div>
+
             <div>
-              <h4>Частота</h4>
+              <h4>Частота(Опционально)</h4>
               <input
                 type="text"
                 className={styles["select-params"]}
-                value={operationState.operations?.frequency || ""}
-                onChange={(e) => dispatch(setOperations({ frequency: e.target.value }))} 
+                value={safeOps.frequency}
+                onChange={(e) =>
+                  dispatch(setOperations({ frequency: e.target.value }))
+                }
                 placeholder="напр., каждые 6 часов"
               />
-            </div>
-
-            {/* Предыдущие инциденты */}
-            <div className={styles["full-width"]}>
-              <h4>Предыдущие инциденты на этом складе</h4>
-              <div className={styles["radio-group"]}>
-                {[
-                  { id: "yes", label: "Да" },
-                  { id: "no", label: "Нет" },
-                ].map((option) => (
-                  <div key={option.id} className={styles["radio-item"]}>
-                    <input
-                      type="radio"
-                      id={`incident-${option.id}`}
-                      name="incident"
-                      value={option.id}
-                      checked={operationState.operations?.isIncident === option.id}
-                      onChange={(e) => dispatch(setOperations({ isIncident: option.id }))} 
-                      className={styles["radio"]}
-                    />
-                    <label
-                      htmlFor={`incident-${option.id}`}
-                      className={styles["radio-label"]}
-                    >
-                      {option.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>

@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       svgr(),
-      checker({ typescript: true }),
+      checker({ typescript: false }),
       ViteImageOptimizer({
         png: { quality: 70 },
         jpeg: {

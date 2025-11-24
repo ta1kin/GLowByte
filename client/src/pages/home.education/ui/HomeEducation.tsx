@@ -3,6 +3,7 @@ import { Params } from './Params'
 
 
 import styles from './HomeEducation.module.scss'
+import { Query } from './Query'
 
 
 function HomeEducationPage(): JSX.Element {
@@ -10,6 +11,7 @@ function HomeEducationPage(): JSX.Element {
         <div className={ styles['home-education-page'] }>
             <main className={ styles['home-education-page__main'] }>
                 <Params />
+                <Query />
             </main>
         </div>
     )
