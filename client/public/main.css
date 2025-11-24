@@ -41,6 +41,7 @@ html, body {
     touch-action: none;
     overflow: hidden;
     overscroll-behavior: none;
+    background: #ffffff;
 }
 
 body {

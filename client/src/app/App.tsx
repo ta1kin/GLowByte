@@ -2,7 +2,6 @@ import { type JSX, Suspense, lazy } from 'react'
 import { MainProvider } from '@/app/provider'
 import { fadeOutPreloader } from '@/shared/utils'
 
-
 async function delayForLazy(promise: Promise<any>): Promise<any> {
   const start = performance.now()
 

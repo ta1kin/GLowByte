@@ -53,7 +53,7 @@ function PreviewPage(): JSX.Element {
   async function handleGoPredict(): Promise<void> {
     setLoad(true)
     // Пишешь логику отправки запроса на сервер
-    enqueueSnackbar('Тут сообщение результата', { variant: 'success' })
+    enqueueSnackbar('Успешное применение параметров', { variant: 'success' })
     setLoad(false);
 
     // Тут если не ошибка, то дальше, если ошибка, то рна страницу ошибок

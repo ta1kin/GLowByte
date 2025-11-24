@@ -8,6 +8,7 @@ import {
 
 import { Routes, Route } from 'react-router-dom'
 import { MainLayout } from '@/app/layout'
+import { useNavigate } from 'react-router-dom'
 import{ HomeLayout } from '@/pages/home'
 import { PreviewPage } from '@/pages/preview'
 import { HomeEstimationPage } from '@/pages/home.estimation'
@@ -15,10 +16,16 @@ import { HomeEducationPage } from '@/pages/home.education'
 import { HomeHistoryPage } from '@/pages/home.history'
 import { ErrorPage } from '@/pages/error'
 import { NotFoundPage } from '@/pages/not-found'
-import type { JSX } from 'react'
+import { type JSX, useEffect } from 'react'
 
 
 export const MainRoutes = (): JSX.Element => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        navigate(previewRoute)
+    },[])
+
     return (
         <Routes>
             <Route element={ <MainLayout /> }>

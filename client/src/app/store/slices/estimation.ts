@@ -65,66 +65,6 @@ const initialState: IEstimationState = {
   result: null,
 };
 
-// export const sendEstimationData = createAsyncThunk(
-//   `${estimationSliceName}/send-estimation-data`,
-//   async (_, { getState }): Promise<"error" | null | IEStateResult> => {
-//     try {
-//       const rootState = getState() as IMainState;
-//       const estimState = rootState.estimation;
-
-//       console.log("current estimate state", estimState);
-
-//       //   const max_temp = estimState.current?.surfTemp || 0;
-//       //   const age_days = estimState.params?.date
-//       //     ? new Date().getTime() - estimState.params.date.getTime()
-//       //     : 0;
-//       //   const temp_air = estimState.current?.interTempUnit[0]?.temp || 0;
-//       //   const humidity = estimState.params?.humidity || 0;
-//       //   const precip = estimState.params?.sulfur || 0;
-//       //   const temp_delta_3d =
-//       //     (estimState.geometry?.height ?? 0) +
-//       //     (estimState.geometry?.length ?? 0) +
-//       //     (estimState.geometry?.width ?? 0);
-//       //   const horizonDays = 7;
-//       const max_temp = Number(45.5);
-//       const age_days = Number(30);
-//       const temp_air = Number(20.0);
-//       const humidity = Number(60.0);
-//       const precip = Number(0.0);
-//       const temp_delta_3d = Number(2.5);
-//       const horizonDays = Number(7);
-      
-//       const data = {
-//         max_temp,
-//         age_days,
-//         temp_air,
-//         humidity,
-//         precip,
-//         temp_delta_3d,
-//         horizonDays,
-//       };
-
-//       const url = "https://vmestedate.ru/api/predictions/calculate/direct";
-
-//       const response = await axios.post(url, data, {
-//         headers: { "Content-Type": "application/json" },
-//       });
-
-//       console.log("Запрос вот он", response);
-//       if (![200, 201].includes(response.status)) {
-//         return null;
-//       }
-
-//       if (response.data?.success && response.data.data) {
-//         return response.data.data;
-//       }
-
-//       return null;
-//     } catch (err: any) {
-//       return "error";
-//     }
-//   }
-// );
 export const sendEstimationData = createAsyncThunk(
   `${estimationSliceName}/send-estimation-data`,
   async (_, { getState }): Promise<"error" | null | IEStateResult> => {
@@ -132,8 +72,8 @@ export const sendEstimationData = createAsyncThunk(
       const rootState = getState() as IMainState;
       const estimState = rootState.estimation;
 
-        const max_temp = Math.max(estimState.current?.surfTemp || 0, 200);
-       
+        const max_temp = Math.min(estimState.current?.surfTemp || 0, 200);
+       console.log("max_temp", max_temp)
         // const age_days = estimState.params?.date
         //   ? new Date().getTime() - estimState.params.date.getTime()
         //   : 0;
@@ -146,13 +86,6 @@ export const sendEstimationData = createAsyncThunk(
           (estimState.geometry?.length ?? 0) +
           (estimState.geometry?.width ?? 0);
         const horizonDays = 3;
-      // const max_temp = Number(70.5);
-      // const age_days = Number(50);
-      // const temp_air = Number(50.0);
-      // const humidity = Number(50.0);
-      // const precip = Number(0.2);
-      // const temp_delta_3d = Number(2.5);
-      // const horizonDays = Number(3);
 
       const data = {
         max_temp,

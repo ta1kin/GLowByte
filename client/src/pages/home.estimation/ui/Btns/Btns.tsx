@@ -36,16 +36,20 @@ function Btns(): JSX.Element {
 
         console.log("вот респонс", response)
 
-        enqueueSnackbar('Сообщение отправлено', { variant: 'success' })
-        setLoad(false)
-
-        // Тут если критическая ошибка, по типу 404 или 500, то нахуй с пляжа
-        if(false) {
-            navigate(errorRoute)
+        if (response && response !== 'error') {
+            enqueueSnackbar('Успешное получение прогноза', { variant: 'success' })
+        }
+        else{
+            enqueueSnackbar('Прогноз не получен', { variant: 'error' })
         }
 
-        // Отработать успешный ответ или нет (сейчас имитация успеха)
-        if(true) {
+        setLoad(false)
+
+        if(response === 'error') {
+            
+            navigate(errorRoute)
+        }
+        else if(response) {
             const resultHtm = document.getElementById('hest-res')
 
             resultHtm?.scrollIntoView({
@@ -53,6 +57,8 @@ function Btns(): JSX.Element {
                 block: 'start'
             });
         }
+
+      
     }
 
     function handleClear(): void {
