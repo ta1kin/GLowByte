@@ -3,6 +3,7 @@
 import { UIBlock } from "@/shared/ui/Block";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { SEALING_LVL_SETTING } from "@/shared/config";
+import { useSnackbar } from "notistack";
 import { ESealingLevel } from "@/app/store/slices";
 import { getHistory } from "@/app/store/slices";
 import { setHistParams } from "@/app/store/slices";
@@ -57,6 +58,7 @@ function Params(): JSX.Element {
   const historyParams = useSelector((state: IMainState) => state.history.params)
 
   const dispatch = useDispatch<TMainDispatch>();
+  const { enqueueSnackbar } = useSnackbar()
 
   const [load, setLoad] = useState<boolean>(false)
   const [openCalendarFor, setOpenCalendarFor] = useState<"from" | "to" | null>(null);
@@ -89,7 +91,7 @@ function Params(): JSX.Element {
     const response = await dispatch(getHistory()).unwrap()
 
     if(!response || response === 'error') {
-      
+      enqueueSnackbar('Ошибка ', { variant: 'error' })
     }
 
     setLoad(false)
