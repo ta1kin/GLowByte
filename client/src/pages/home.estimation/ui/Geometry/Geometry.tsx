@@ -2,6 +2,11 @@ import { UIBlock } from "@/shared/ui/Block";
 import type { JSX } from "react";
 import { useState } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+import type { IMainState, TMainDispatch } from "@/app/store";
+import { setGeometry } from "@/app/store/slices/estimation";
+
+
 import SvgBoxStroke from "@/shared/assets/icons/box-stroke.svg";
 import styles from "./Geometry.module.scss";
 
@@ -33,14 +38,11 @@ const COVERING = [
 ];
 
 function Geometry(): JSX.Element {
-  const [storage, setStorage] = useState<string>("");
-  const [height, setHeight] = useState<string>("");
-  const [length, setLength] = useState<string>("");
-  const [width, setWidth] = useState<string>("");
-  const [form, setForm] = useState<string>("");
-  const [level, setLevel] = useState<string>("");
-  const [distance, setDistance] = useState<number>();
-  const [coveringForm, setCoveringForm] = useState<string>("");
+
+  const geometryState = useSelector((state: IMainState) => state.estimation);
+  const dispatch = useDispatch<TMainDispatch>();
+
+
 
   return (
     <section style={{ width: "100%" }}>
@@ -55,8 +57,8 @@ function Geometry(): JSX.Element {
               <h4>Тип хранения</h4>
               <select
                 className={styles["select-params"]}
-                value={storage}
-                onChange={(event: any) => setStorage(event.target.value)}
+                value={geometryState.geometry?.type || ""}
+                onChange={(event: any) => dispatch(setGeometry({ type: event.target.value }))}
                 required
               >
                 <option value="" disabled hidden>
@@ -72,8 +74,8 @@ function Geometry(): JSX.Element {
             <div>
               <h4>Высота штабеля, м</h4>
               <input
-                value={height || ""}
-                onChange={(event: any) => setHeight(event.target.value)}
+                value={geometryState.geometry?.height || ""}
+                onChange={(event: any) => dispatch(setGeometry({ height: event.target.value }))}
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
@@ -82,8 +84,8 @@ function Geometry(): JSX.Element {
             <div>
               <h4>Длина штабеля, м</h4>
               <input
-                value={length || ""}
-                onChange={(event: any) => setLength(event.target.value)}
+                value={geometryState.geometry?.length || ""}
+                onChange={(event: any) => dispatch(setGeometry({ length: event.target.value }))}
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
@@ -92,8 +94,8 @@ function Geometry(): JSX.Element {
             <div>
               <h4>Ширина штабеля, м</h4>
               <input
-                value={width || ""}
-                onChange={(event: any) => setWidth(event.target.value)}
+                value={geometryState.geometry?.width || ""}
+                onChange={(event: any) => dispatch(setGeometry({ width: event.target.value }))}
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
@@ -104,8 +106,8 @@ function Geometry(): JSX.Element {
               <h4>Форма штабеля</h4>
               <select
                 className={styles["select-params"]}
-                value={form}
-                onChange={(event: any) => setForm(event.target.value)}
+                value={geometryState.geometry?.stackShape || ""}
+                onChange={(event: any) => dispatch(setGeometry({ stackShape: event.target.value }))}
                 required
               >
                 <option value="" disabled hidden>
@@ -123,8 +125,8 @@ function Geometry(): JSX.Element {
               <h4>Уровень уплотнения</h4>
               <select
                 className={styles["select-params"]}
-                value={level}
-                onChange={(event: any) => setLevel(event.target.value)}
+                value={geometryState.geometry?.sealingLevel || ""}
+                onChange={(event: any) => dispatch(setGeometry({ sealingLevel: event.target.value }))}
                 required
               >
                 <option value="" disabled hidden>
@@ -141,9 +143,9 @@ function Geometry(): JSX.Element {
             <div className={styles["full-width"]}>
               <h4>Расстояние до ближайшего штабеля, м</h4>
               <input
-                value={distance || ""}
+                value={geometryState.geometry?.distance || ""}
                 onChange={(event: any) =>
-                  setDistance(Number(event.target.value))
+                  dispatch(setGeometry({ distance: Number(event.target.value) }))
                 }
                 type="text"
                 className={styles["select-params"]}
@@ -161,8 +163,8 @@ function Geometry(): JSX.Element {
                       id={`covering-${option.id || "default"}`}
                       name="coveringForm"
                       value={option.id}
-                      checked={coveringForm === option.id}
-                      onChange={(e) => setCoveringForm(e.target.value)}
+                      checked={geometryState.geometry?.ProtectType === option.id}
+                      onChange={(e) => dispatch(setGeometry({ ProtectType: e.target.value }))}
                       className={styles["radio"]}
                     />
                     <label

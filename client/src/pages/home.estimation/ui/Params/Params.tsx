@@ -2,6 +2,10 @@ import { UIBlock } from "@/shared/ui/Block";
 import type { JSX } from "react";
 import { useState } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+import type { IMainState, TMainDispatch } from "@/app/store";
+import { setParams } from "@/app/store/slices/estimation";
+
 import SvgBox from "@/shared/assets/icons/box.svg";
 import styles from "./Params.module.scss";
 
@@ -19,13 +23,18 @@ const ASH = [
 ];
 
 function Params(): JSX.Element {
-  const [mark, setMark] = useState<string>("");
-  const [ash, setAsh] = useState<string>("");
-  const [humidity, setHumidity] = useState<string>("");
-  const [sulfur, setSulfur] = useState<string>("");
-  const [fraction, setFraction] = useState<string>("");
-  const [volume, setVolume] = useState<string>("");
+  const paramsState = useSelector((state: IMainState) => state.estimation);
+  const dispatch = useDispatch<TMainDispatch>();
+
   const [date, setDate] = useState<string>("");
+
+  const formatDateForInput = (date: Date | null): string => {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <section style={{ width: "100%" }}>
@@ -36,8 +45,10 @@ function Params(): JSX.Element {
               <h4>Марка / Тип угля</h4>
               <select
                 className={styles["select-params"]}
-                value={mark}
-                onChange={(event: any) => setMark(event.target.value)}
+                value={paramsState.params?.mark || ""}
+                onChange={(event: any) =>
+                  dispatch(setParams({ mark: event.target.value }))
+                }
                 required
               >
                 <option value="" disabled hidden>
@@ -55,8 +66,10 @@ function Params(): JSX.Element {
               <h4>Зольность, %</h4>
               <select
                 className={styles["select-params"]}
-                value={ash}
-                onChange={(event: any) => setAsh(event.target.value)}
+                value={paramsState.params?.ash || ""}
+                onChange={(event: any) =>
+                  dispatch(setParams({ ash: event.target.value }))
+                }
                 required
               >
                 <option value="" disabled hidden>
@@ -72,8 +85,10 @@ function Params(): JSX.Element {
             <div>
               <h4>Влажность, %</h4>
               <input
-                value={humidity || ""}
-                onChange={(event: any) => setHumidity(event.target.value)}
+                value={paramsState.params?.humidity || ""}
+                onChange={(event: any) =>
+                  dispatch(setParams({ humidity: event.target.value }))
+                }
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
@@ -82,8 +97,10 @@ function Params(): JSX.Element {
             <div>
               <h4>Сера, %</h4>
               <input
-                value={sulfur || ""}
-                onChange={(event: any) => setSulfur(event.target.value)}
+                value={paramsState.params?.sulfur || ""}
+                onChange={(event: any) =>
+                  dispatch(setParams({ sulfur: event.target.value }))
+                }
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
@@ -93,8 +110,10 @@ function Params(): JSX.Element {
             <div>
               <h4>Размер частиц / фракция (мм)</h4>
               <input
-                value={fraction || ""}
-                onChange={(event: any) => setFraction(event.target.value)}
+                value={paramsState.params?.fraction || ""}
+                onChange={(event: any) =>
+                  dispatch(setParams({ fraction: event.target.value }))
+                }
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
@@ -104,8 +123,10 @@ function Params(): JSX.Element {
             <div>
               <h4>Объем партии, т</h4>
               <input
-                value={volume || ""}
-                onChange={(event: any) => setVolume(event.target.value)}
+                value={paramsState.params?.volume || ""}
+                onChange={(event: any) =>
+                  dispatch(setParams({ volume: event.target.value }))
+                }
                 type="text"
                 className={styles["select-params"]}
                 placeholder="0.0"
@@ -115,21 +136,16 @@ function Params(): JSX.Element {
             <div className={styles["full-width"]}>
               <h4>Дата начала хранения</h4>
               <input
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
+                // value={formatDateForInput(paramsState.params?.date )}
+                onChange={(e: any) =>
+                  dispatch(setParams({ date: e.target.value }))
+                }
                 type="date"
                 className={styles["select-params"] + " " + styles["input-date"]}
               />
             </div>
           </div>
         </div>
-      </UIBlock>
-    </section>
-  );
-  return (
-    <section style={{ width: "100%" }}>
-      <UIBlock type="orange" iconSrc={SvgBox} headTxt="Параметры партии угля">
-        <></>
       </UIBlock>
     </section>
   );

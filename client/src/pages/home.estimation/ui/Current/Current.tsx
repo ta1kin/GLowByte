@@ -2,22 +2,27 @@ import { UIBlock } from '@/shared/ui/Block';
 import type { JSX } from 'react';
 import { useState } from 'react';
 
+import { useDispatch, useSelector } from "react-redux";
+import type { IMainState, TMainDispatch } from "@/app/store";
+import { setCurrent } from "@/app/store/slices/estimation";
+
+
 import SvgDeg from '@/shared/assets/icons/deg.svg';
 import styles from './Current.module.scss';
 
 
 function Current(): JSX.Element {
     
+
+  const currentState = useSelector((state: IMainState) => state.estimation);
+  const dispatch = useDispatch<TMainDispatch>();
+
   const [innerTemps, setInnerTemps] = useState([
     { depth: '', temp: '' },
     { depth: '', temp: '' },
     { depth: '', temp: '' },
   ]);
 
-  const [surfaceTemp, setSurfaceTemp] = useState<string>('');
-  const [dangerSigns, setDangerSigns] = useState<string[]>([]);
-  const [reformatted, setReformatted] = useState<string>('');
-  const [watered, setWatered] = useState<string>('');
 
   const handleInnerTempChange = (index: number, field: 'depth' | 'temp', value: string) => {
     const newTemps = [...innerTemps];
@@ -54,8 +59,9 @@ function Current(): JSX.Element {
                     <input
                       type="text"
                       className={styles['table-input']}
-                      value={row.depth}
-                      onChange={(e) => handleInnerTempChange(index, 'depth', e.target.value)}
+                      value={currentState.current?.interTempUnit[index]?.depth ?? ''}
+
+                      onChange={(e: any) => dispatch(setCurrent( { interTempUnit: { ...currentState.current?.interTempUnit, [index]: { ...currentState.current?.interTempUnit[index], depth: e.target.value } } } ))}
                       placeholder="0.0"
                     />
                     <input
@@ -75,8 +81,8 @@ function Current(): JSX.Element {
               <input
                 type="text"
                 className={styles['select-params']}
-                value={surfaceTemp}
-                onChange={(e) => setSurfaceTemp(e.target.value)}
+                value={currentState.current?.surfTemp || ''}
+                onChange={(e: any) => dispatch(setCurrent( { surfTemp: e.target.value } ))} 
                 placeholder="0.0"
               />
             </div>
@@ -93,8 +99,8 @@ function Current(): JSX.Element {
                     <input
                       type="checkbox"
                       id={`danger-${sign.id}`}
-                      checked={dangerSigns.includes(sign.id)}
-                      onChange={() => handleDangerChange(sign.id)}
+                      checked={currentState.current?.signsDanger.includes(sign.id)}
+                      onChange={() => dispatch(setCurrent( { signsDanger: dangerSigns.includes(sign.id) ? dangerSigns.filter((id) => id !== sign.id) : [...dangerSigns, sign.id] } ))}
                       className={styles['checkbox']}
                     />
                     <label htmlFor={`danger-${sign.id}`} className={styles['checkbox-label']}>
@@ -121,8 +127,8 @@ function Current(): JSX.Element {
                         id={`reformatted-${option.id}`}
                         name="reformatted"
                         value={option.id}
-                        checked={reformatted === option.id}
-                        onChange={(e) => setReformatted(e.target.value)}
+                        checked={currentState.current?.reformatted === option.id}
+                        onChange={(e: any) => dispatch(setCurrent( { reformatted: e.target.value } ))}
                         className={styles['radio']}
                       />
                       <label htmlFor={`reformatted-${option.id}`} className={styles['radio-label']}>
@@ -146,8 +152,8 @@ function Current(): JSX.Element {
                         id={`watered-${option.id}`}
                         name="watered"
                         value={option.id}
-                        checked={watered === option.id}
-                        onChange={(e) => setWatered(e.target.value)}
+                        checked={currentState.current?.watered === option.id}
+                        onChange={(e: any) => dispatch(setCurrent( { watered: e.target.value } ))} 
                         className={styles['radio']}
                       />
                       <label htmlFor={`watered-${option.id}`} className={styles['radio-label']}>
